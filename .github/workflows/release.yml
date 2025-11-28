@@ -22,6 +22,8 @@ jobs:
         with:
           TOOLCHAIN_VERSION: stable
           RUSTTARGET: ${{ matrix.target }}
+          ARCHIVE_TYPES: "zip"
+          ARCHIVE_NAME: "whatsminer_chip_map_${{ matrix.target }}"
           EXTRA_FILES: "README.md"
           UPLOAD_MODE: "none"
       - name: Upload artifact
