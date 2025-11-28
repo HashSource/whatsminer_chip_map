@@ -24,7 +24,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: binary-${{ matrix.target }}
+          name: whatsminer_chip_map-${{ matrix.target }}
           path: output/*
 
   release:
