@@ -101,6 +101,13 @@ pub fn color_for_board_temp(temp: f64) -> Color {
     gradient_text_color(t)
 }
 
+/// Text color for nonce deficit display (gradient)
+/// deficit is percentage below slot average (0 = good, 50+ = bad)
+pub fn color_for_nonce_deficit(deficit: f32) -> Color {
+    let t = normalize(deficit, NONCE_DEFICIT_RANGE.0, NONCE_DEFICIT_RANGE.1);
+    gradient_text_color(t)
+}
+
 /// Chip cell style with gradient coloring based on mode
 #[allow(clippy::cast_precision_loss)] // small integer values fit in f32
 pub fn chip_cell(

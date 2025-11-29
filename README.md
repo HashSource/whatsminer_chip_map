@@ -4,7 +4,13 @@
 
 ## Demo
 
-![demo](./demo.png)
+### Temps
+
+![demo](./demo_temp.png)
+
+### Nonces
+
+![demo](./demo_nonce.png)
 
 ## Analysis Modes
 

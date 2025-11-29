@@ -22,8 +22,6 @@ pub fn miner_view<'a>(
     dragging: bool,
     color_mode: ColorMode,
 ) -> Element<'a, Message> {
-    let sidebar = sidebar(data, system_info);
-
     // Look up miner config based on model name for physical layout
     let miner_config = system_info.and_then(|info| config::lookup(&info.model));
 
@@ -37,8 +35,10 @@ pub fn miner_view<'a>(
                 .unwrap_or(3)
         });
 
-    // Compute cross-slot analysis for gradient/outlier modes
+    // Compute cross-slot analysis for gradient/outlier/nonce modes
     let all_analysis = analysis::analyze_all_slots(&data.slots, chips_per_domain);
+
+    let sidebar = sidebar(data, system_info, &all_analysis);
 
     let grids = data.slots.iter().zip(all_analysis.iter()).fold(
         Column::new().spacing(25).width(Length::Shrink),
@@ -86,7 +86,11 @@ pub fn miner_view<'a>(
     }
 }
 
-fn sidebar<'a>(data: &'a MinerData, system_info: Option<&'a SystemInfo>) -> Column<'a, Message> {
+fn sidebar<'a>(
+    data: &'a MinerData,
+    system_info: Option<&'a SystemInfo>,
+    all_analysis: &[Vec<ChipAnalysis>],
+) -> Column<'a, Message> {
     let mut col = Column::new().spacing(2).padding(5).width(Length::Fill);
 
     // System info section
@@ -103,22 +107,40 @@ fn sidebar<'a>(data: &'a MinerData, system_info: Option<&'a SystemInfo>) -> Colu
             .push(Space::with_height(8)); // spacer
     }
 
-    for slot in &data.slots {
+    for (slot_idx, slot) in data.slots.iter().enumerate() {
         col = col.push(
             text(format!("── Slot {} ──", slot.id))
                 .size(13)
                 .color(theme::BRAND_ORANGE),
         );
 
-        for chip in &slot.chips {
+        let slot_analysis = all_analysis.get(slot_idx);
+
+        for (chip_idx, chip) in slot.chips.iter().enumerate() {
+            let nonce_deficit = slot_analysis
+                .and_then(|a| a.get(chip_idx))
+                .map_or(0.0, |a| a.nonce_deficit);
+
             col = col.push(
-                text(format!(
-                    "C{:<3} freq:{:<3} vol:{:<3} temp:{:<2} nonce:{:<6} err:{} crc:{} x:{} repeat:{} pct:{:.1}%/{:.1}%",
-                    chip.id, chip.freq, chip.vol, chip.temp, chip.nonce,
-                    chip.errors, chip.crc, chip.x, chip.repeat, chip.pct1, chip.pct2,
-                ))
-                .size(12)
-                .color(theme::color_for_chip_temp(chip.temp)),
+                row![
+                    text(format!("C{:<3}", chip.id)).size(12),
+                    text(format!("freq:{:<3}", chip.freq)).size(12),
+                    text(format!("vol:{:<3}", chip.vol)).size(12),
+                    text("temp:").size(12),
+                    text(format!("{:<2}", chip.temp))
+                        .size(12)
+                        .color(theme::color_for_chip_temp(chip.temp)),
+                    text("nonce:").size(12),
+                    text(format!("{:<6}", chip.nonce))
+                        .size(12)
+                        .color(theme::color_for_nonce_deficit(nonce_deficit)),
+                    text(format!(
+                        "errors:{} crc:{} x:{} repeat:{} pct:{:.0}%/{:.0}%",
+                        chip.errors, chip.crc, chip.x, chip.repeat, chip.pct1, chip.pct2,
+                    ))
+                    .size(12),
+                ]
+                .spacing(2),
             );
         }
     }
