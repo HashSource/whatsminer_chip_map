@@ -1,6 +1,9 @@
 use iced::{
     Alignment, Element, Length, Point,
-    widget::{Column, Row, Space, column, container, mouse_area, row, scrollable, text},
+    widget::{
+        Column, Row, Space, column, container, mouse_area, row, scrollable, text, tooltip,
+        tooltip::Position,
+    },
 };
 
 use crate::Message;
@@ -141,6 +144,7 @@ fn chip_grid(chips: &[Chip], color_mode: ColorMode) -> Column<'_, Message> {
 
 fn chip_cell(chip: &Chip, color_mode: ColorMode) -> Element<'_, Message> {
     let Chip {
+        id,
         freq,
         vol,
         temp,
@@ -159,12 +163,16 @@ fn chip_cell(chip: &Chip, color_mode: ColorMode) -> Element<'_, Message> {
     .align_x(Alignment::Center)
     .spacing(2);
 
-    container(content)
+    let cell = container(content)
         .width(CHIP_SIZE.0)
         .height(CHIP_SIZE.1)
         .padding(4)
         .center_x(Length::Shrink)
         .center_y(Length::Shrink)
-        .style(move |_| theme::chip_cell(temp, errors, crc, color_mode))
+        .style(move |_| theme::chip_cell(temp, errors, crc, color_mode));
+
+    tooltip(cell, text(format!("C{id}")).size(12), Position::Top)
+        .gap(5)
+        .style(|_| theme::tooltip_style())
         .into()
 }

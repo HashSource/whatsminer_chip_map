@@ -147,3 +147,16 @@ pub fn divider_style() -> container::Style {
         ..Default::default()
     }
 }
+
+pub fn tooltip_style() -> container::Style {
+    container::Style {
+        text_color: Some(Color::WHITE),
+        background: Some(Background::Color(BG_PANEL)),
+        border: Border {
+            color: BRAND_ORANGE,
+            width: 1.0,
+            radius: 4.0.into(),
+        },
+        ..Default::default()
+    }
+}
