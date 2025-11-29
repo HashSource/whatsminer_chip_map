@@ -1,3 +1,5 @@
+use std::fmt;
+
 /// Color coding mode for chip visualization
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub enum ColorMode {
@@ -8,16 +10,16 @@ pub enum ColorMode {
 }
 
 impl ColorMode {
-    pub const ALL: [ColorMode; 3] = [ColorMode::Temperature, ColorMode::Errors, ColorMode::Crc];
+    pub const ALL: &[Self] = &[Self::Temperature, Self::Errors, Self::Crc];
 }
 
-impl std::fmt::Display for ColorMode {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            ColorMode::Temperature => write!(f, "Temperature"),
-            ColorMode::Errors => write!(f, "Errors"),
-            ColorMode::Crc => write!(f, "CRC"),
-        }
+impl fmt::Display for ColorMode {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(match self {
+            Self::Temperature => "Temperature",
+            Self::Errors => "Errors",
+            Self::Crc => "CRC",
+        })
     }
 }
 

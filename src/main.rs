@@ -10,10 +10,6 @@ use iced::{
 
 use models::{ColorMode, MinerData};
 
-const DEFAULT_IP: &str = "192.6.8.15";
-const DEFAULT_USER: &str = "admin";
-const DEFAULT_PASS: &str = "admin";
-
 fn main() -> iced::Result {
     iced::application("WhatsMiner Chip Map", App::update, App::view)
         .theme(|_| Theme::Dark)
@@ -33,6 +29,7 @@ pub enum Message {
     ColorModeChanged(ColorMode),
 }
 
+#[derive(Default)]
 struct App {
     ip: String,
     user: String,
@@ -41,36 +38,23 @@ struct App {
     data: Option<MinerData>,
     loading: bool,
     sidebar_width: f32,
-    dragging_divider: bool,
+    dragging: bool,
     color_mode: ColorMode,
-}
-
-impl Default for App {
-    fn default() -> Self {
-        Self {
-            ip: String::new(),
-            user: String::new(),
-            pass: String::new(),
-            status: String::new(),
-            data: None,
-            loading: false,
-            sidebar_width: 500.0,
-            dragging_divider: false,
-            color_mode: ColorMode::default(),
-        }
-    }
 }
 
 impl App {
     fn new() -> (Self, Task<Message>) {
-        let app = Self {
-            ip: DEFAULT_IP.into(),
-            user: DEFAULT_USER.into(),
-            pass: DEFAULT_PASS.into(),
-            status: "Ready".into(),
-            ..Default::default()
-        };
-        (app, Task::none())
+        (
+            Self {
+                ip: "192.6.8.15".into(),
+                user: "admin".into(),
+                pass: "admin".into(),
+                status: "Ready".into(),
+                sidebar_width: 500.0,
+                ..Default::default()
+            },
+            Task::none(),
+        )
     }
 
     fn update(&mut self, msg: Message) -> Task<Message> {
@@ -87,34 +71,23 @@ impl App {
                     Message::Fetched,
                 );
             }
-            Message::Fetched(result) => {
+            Message::Fetched(Ok(data)) => {
                 self.loading = false;
-                match result {
-                    Ok(data) => {
-                        self.status =
-                            format!("{} slots, {} chips", data.slots.len(), data.total_chips());
-                        self.data = Some(data);
-                    }
-                    Err(e) => {
-                        self.status = format!("Error: {e}");
-                        self.data = None;
-                    }
-                }
+                self.status = format!("{} slots, {} chips", data.slots.len(), data.total_chips());
+                self.data = Some(data);
             }
-            Message::DividerDragStart => {
-                self.dragging_divider = true;
+            Message::Fetched(Err(e)) => {
+                self.loading = false;
+                self.status = format!("Error: {e}");
+                self.data = None;
             }
-            Message::DividerDragEnd => {
-                self.dragging_divider = false;
+            Message::DividerDragStart => self.dragging = true,
+            Message::DividerDragEnd => self.dragging = false,
+            Message::DividerDrag(x) if self.dragging => {
+                self.sidebar_width = x.clamp(150.0, 500.0);
             }
-            Message::DividerDrag(x) => {
-                if self.dragging_divider {
-                    self.sidebar_width = x.clamp(150.0, 500.0);
-                }
-            }
-            Message::ColorModeChanged(mode) => {
-                self.color_mode = mode;
-            }
+            Message::DividerDrag(_) => {}
+            Message::ColorModeChanged(mode) => self.color_mode = mode,
         }
         Task::none()
     }
@@ -143,7 +116,7 @@ impl App {
             pick_list(
                 ColorMode::ALL,
                 Some(self.color_mode),
-                Message::ColorModeChanged,
+                Message::ColorModeChanged
             )
             .padding(8)
             .width(120),
@@ -156,13 +129,8 @@ impl App {
             .padding(10)
             .width(Length::Fill);
 
-        let content: Element<'_, Message> = match &self.data {
-            Some(data) => ui::render_miner_view(
-                data,
-                self.sidebar_width,
-                self.dragging_divider,
-                self.color_mode,
-            ),
+        let content = match &self.data {
+            Some(data) => ui::miner_view(data, self.sidebar_width, self.dragging, self.color_mode),
             None => container(text("Click 'Fetch' to load miner data").size(16))
                 .padding(20)
                 .width(Length::Fill)
