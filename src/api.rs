@@ -1,3 +1,4 @@
+use std::sync::Arc;
 use std::time::Duration;
 
 use reqwest::Client;
@@ -6,15 +7,22 @@ use crate::models::{Chip, MinerData, Slot, SystemInfo};
 
 const TIMEOUT_SECS: u64 = 30;
 
-pub async fn fetch(ip: &str, user: &str, pass: &str) -> Result<MinerData, String> {
-    let client = Client::builder()
-        .danger_accept_invalid_certs(true)
-        .cookie_store(true)
-        .timeout(Duration::from_secs(TIMEOUT_SECS))
-        .build()
-        .map_err(|e| e.to_string())?;
+/// Fetch all data with single auth, parallel page fetches
+pub async fn fetch_all(
+    ip: &str,
+    user: &str,
+    pass: &str,
+) -> Result<(MinerData, SystemInfo), String> {
+    let client = Arc::new(
+        Client::builder()
+            .danger_accept_invalid_certs(true)
+            .cookie_store(true)
+            .timeout(Duration::from_secs(TIMEOUT_SECS))
+            .build()
+            .map_err(|e| e.to_string())?,
+    );
 
-    // Authenticate
+    // Authenticate once
     let resp = client
         .post(format!("https://{ip}/cgi-bin/luci"))
         .form(&[("luci_username", user), ("luci_password", pass)])
@@ -26,7 +34,17 @@ pub async fn fetch(ip: &str, user: &str, pass: &str) -> Result<MinerData, String
         return Err(format!("Login failed: {}", resp.status()));
     }
 
-    // Fetch API data
+    // Fetch both pages in parallel
+    let ip = ip.to_string();
+    let (miner_result, overview_result) = tokio::join!(
+        fetch_miner_api(client.clone(), &ip),
+        fetch_overview(client, &ip),
+    );
+
+    Ok((miner_result?, overview_result?))
+}
+
+async fn fetch_miner_api(client: Arc<Client>, ip: &str) -> Result<MinerData, String> {
     let resp = client
         .get(format!("https://{ip}/cgi-bin/luci/admin/status/btminerapi"))
         .send()
@@ -41,27 +59,7 @@ pub async fn fetch(ip: &str, user: &str, pass: &str) -> Result<MinerData, String
     parse_html(&html)
 }
 
-pub async fn fetch_system_info(ip: &str, user: &str, pass: &str) -> Result<SystemInfo, String> {
-    let client = Client::builder()
-        .danger_accept_invalid_certs(true)
-        .cookie_store(true)
-        .timeout(Duration::from_secs(TIMEOUT_SECS))
-        .build()
-        .map_err(|e| e.to_string())?;
-
-    // Authenticate
-    let resp = client
-        .post(format!("https://{ip}/cgi-bin/luci"))
-        .form(&[("luci_username", user), ("luci_password", pass)])
-        .send()
-        .await
-        .map_err(|e| e.to_string())?;
-
-    if !resp.status().is_success() && !resp.status().is_redirection() {
-        return Err(format!("Login failed: {}", resp.status()));
-    }
-
-    // Fetch overview page
+async fn fetch_overview(client: Arc<Client>, ip: &str) -> Result<SystemInfo, String> {
     let resp = client
         .get(format!("https://{ip}/cgi-bin/luci/admin/status/overview"))
         .send()
@@ -69,7 +67,7 @@ pub async fn fetch_system_info(ip: &str, user: &str, pass: &str) -> Result<Syste
         .map_err(|e| e.to_string())?;
 
     if !resp.status().is_success() {
-        return Err(format!("Overview fetch failed: {}", resp.status()));
+        return Err(format!("Overview failed: {}", resp.status()));
     }
 
     let html = resp.text().await.map_err(|e| e.to_string())?;

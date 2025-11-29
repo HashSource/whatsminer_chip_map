@@ -22,8 +22,7 @@ pub enum Message {
     UserChanged(String),
     PassChanged(String),
     Fetch,
-    Fetched(Result<MinerData, String>),
-    SystemInfoFetched(Result<SystemInfo, String>),
+    Fetched(Result<(MinerData, SystemInfo), String>),
     DividerDragStart,
     DividerDragEnd,
     DividerDrag(f32),
@@ -68,32 +67,21 @@ impl App {
                 self.loading = true;
                 self.status = "Connecting...".into();
                 let (ip, user, pass) = (self.ip.clone(), self.user.clone(), self.pass.clone());
-                let (ip2, user2, pass2) = (ip.clone(), user.clone(), pass.clone());
-                return Task::batch([
-                    Task::perform(
-                        async move { api::fetch(&ip, &user, &pass).await },
-                        Message::Fetched,
-                    ),
-                    Task::perform(
-                        async move { api::fetch_system_info(&ip2, &user2, &pass2).await },
-                        Message::SystemInfoFetched,
-                    ),
-                ]);
+                return Task::perform(
+                    async move { api::fetch_all(&ip, &user, &pass).await },
+                    Message::Fetched,
+                );
             }
-            Message::Fetched(Ok(data)) => {
+            Message::Fetched(Ok((data, info))) => {
                 self.loading = false;
                 self.status = format!("{} slots, {} chips", data.slots.len(), data.total_chips());
                 self.data = Some(data);
+                self.system_info = Some(info);
             }
             Message::Fetched(Err(e)) => {
                 self.loading = false;
                 self.status = format!("Error: {e}");
                 self.data = None;
-            }
-            Message::SystemInfoFetched(Ok(info)) => {
-                self.system_info = Some(info);
-            }
-            Message::SystemInfoFetched(Err(_)) => {
                 self.system_info = None;
             }
             Message::DividerDragStart => self.dragging = true,
