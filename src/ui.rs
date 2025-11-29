@@ -21,14 +21,8 @@ fn parse_slot_links(slot_link: &str) -> Vec<(usize, usize)> {
     slot_link
         .split_whitespace()
         .filter_map(|pair| {
-            let parts: Vec<&str> = pair.split(':').collect();
-            if parts.len() == 2 {
-                let a = parts[0].parse().ok()?;
-                let b = parts[1].parse().ok()?;
-                Some((a, b))
-            } else {
-                None
-            }
+            let (a, b) = pair.split_once(':')?;
+            Some((a.parse().ok()?, b.parse().ok()?))
         })
         .collect()
 }
@@ -63,7 +57,7 @@ pub fn miner_view<'a>(
         .map(parse_slot_links)
         .unwrap_or_default();
 
-    let sidebar = sidebar(data, system_info, &all_analysis, &slot_links, lang);
+    let sidebar = sidebar(data, system_info, &all_analysis, lang);
 
     // Build grids - use linked display for hydro/immersion models, normal for others
     let grids = if !slot_links.is_empty() {
@@ -146,7 +140,6 @@ fn sidebar<'a>(
     data: &'a MinerData,
     system_info: Option<&'a SystemInfo>,
     all_analysis: &[Vec<ChipAnalysis>],
-    _slot_links: &[(usize, usize)],
     lang: Language,
 ) -> Column<'a, Message> {
     let mut col = Column::new().spacing(2).padding(5).width(Length::Fill);
@@ -378,10 +371,12 @@ fn linked_slot_grid<'a>(
         .into()
 }
 
-/// Render chip grid for linked slot display
+/// Render chip grid for linked slot display.
+///
 /// For hydro/immersion models: NO snake pattern, simple left/right split
 /// - Right side: first half of domains (D0 at far right)
 /// - Left side: second half of domains (also D0-ward on right)
+///
 /// Both sections display domains right-to-left (lowest domain index on right)
 fn linked_chip_grid<'a>(
     chips: &'a [Chip],
@@ -396,7 +391,7 @@ fn linked_chip_grid<'a>(
     };
 
     // Split domains in half: right side gets first half, left side gets second half
-    let right_domains = (num_domains + 1) / 2; // D0 through D(mid-1) on right
+    let right_domains = num_domains.div_ceil(2); // D0 through D(mid-1) on right
     let left_domains = num_domains - right_domains; // D(mid) through D(last) on left
 
     let mut grid = Column::new()

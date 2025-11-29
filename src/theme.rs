@@ -68,8 +68,8 @@ fn gradient_colors(t: f32) -> (Color, Color) {
             );
         }
     }
-    // Fallback to last stop (GRADIENT_STOPS is never empty)
-    let (_, bg, border) = GRADIENT_STOPS[GRADIENT_STOPS.len() - 1];
+    // Fallback to last stop
+    let &(_, bg, border) = GRADIENT_STOPS.last().unwrap();
     (bg, border)
 }
 
@@ -83,8 +83,8 @@ fn gradient_text_color(t: f32) -> Color {
             return lerp_color(color_a, color_b, local_t);
         }
     }
-    // Fallback to last stop (TEXT_GRADIENT_STOPS is never empty)
-    TEXT_GRADIENT_STOPS[TEXT_GRADIENT_STOPS.len() - 1].1
+    // Fallback to last stop
+    TEXT_GRADIENT_STOPS.last().unwrap().1
 }
 
 /// Text color for chip temperature display (gradient)
