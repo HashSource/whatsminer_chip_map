@@ -7,3 +7,10 @@ edition = "2024"
 iced = { version = "0.13", features = ["tokio"] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 reqwest = { version = "0.12", features = ["cookies", "rustls-tls"], default-features = false }
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true
