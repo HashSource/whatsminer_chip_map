@@ -95,7 +95,7 @@ pub fn color_for_chip_temp(temp: i32) -> Color {
 }
 
 /// Text color for board temperature display (gradient)
-#[allow(clippy::cast_possible_truncation)] // temp values fit in f32
+#[allow(clippy::cast_precision_loss)] // temp values fit in f32
 pub fn color_for_board_temp(temp: f64) -> Color {
     let t = normalize(temp as f32, BOARD_TEMP_RANGE.0, BOARD_TEMP_RANGE.1);
     gradient_text_color(t)

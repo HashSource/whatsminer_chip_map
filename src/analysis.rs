@@ -94,7 +94,6 @@ fn analyze_single_slot(
                 domain,
                 row,
                 is_top_section,
-                bottom_domains,
             );
             let gradient = compute_hot_gradient(chip.temp, &neighbors);
 
@@ -139,7 +138,6 @@ fn get_upstream_neighbor_temps(
     domain: usize,
     row: usize,
     is_top_section: bool,
-    _bottom_domains: usize,
 ) -> Vec<i32> {
     let mut neighbors = Vec::with_capacity(3);
 
