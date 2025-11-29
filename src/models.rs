@@ -1,3 +1,26 @@
+/// Color coding mode for chip visualization
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
+pub enum ColorMode {
+    #[default]
+    Temperature,
+    Errors,
+    Crc,
+}
+
+impl ColorMode {
+    pub const ALL: [ColorMode; 3] = [ColorMode::Temperature, ColorMode::Errors, ColorMode::Crc];
+}
+
+impl std::fmt::Display for ColorMode {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ColorMode::Temperature => write!(f, "Temperature"),
+            ColorMode::Errors => write!(f, "Errors"),
+            ColorMode::Crc => write!(f, "CRC"),
+        }
+    }
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct MinerData {
     pub slots: Vec<Slot>,

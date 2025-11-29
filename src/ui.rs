@@ -4,7 +4,7 @@ use iced::{
 };
 
 use crate::Message;
-use crate::models::{Chip, MinerData, Slot};
+use crate::models::{Chip, ColorMode, MinerData, Slot};
 use crate::theme;
 
 const CHIPS_PER_ROW: usize = 16;
@@ -16,12 +16,13 @@ pub fn render_miner_view(
     data: &MinerData,
     sidebar_width: f32,
     dragging: bool,
+    color_mode: ColorMode,
 ) -> Element<'_, Message> {
     let sidebar = render_sidebar(data);
 
     let grids = data.slots.iter().fold(
         Column::new().spacing(25).width(Length::Shrink),
-        |col, slot| col.push(render_slot_grid(slot)),
+        |col, slot| col.push(render_slot_grid(slot, color_mode)),
     );
 
     // Divider with drag handle
@@ -93,23 +94,29 @@ fn render_sidebar(data: &MinerData) -> Column<'_, Message> {
                 chip.pct1,
                 chip.pct2,
             );
-            sidebar = sidebar.push(text(line).size(12).color(theme::color_for_temp(chip.temp)));
+            sidebar = sidebar.push(
+                text(line)
+                    .size(12)
+                    .color(theme::color_for_chip_temp(chip.temp)),
+            );
         }
     }
 
     sidebar
 }
 
-fn render_slot_grid(slot: &Slot) -> Element<'_, Message> {
+fn render_slot_grid(slot: &Slot, color_mode: ColorMode) -> Element<'_, Message> {
     let header = row![
         text(format!("Slot {}", slot.id)).size(18),
         text(format!("{}MHz", slot.freq)).size(14),
-        text(format!("{:.1}°C", slot.temp)).size(14),
+        text(format!("{:.1}°C", slot.temp))
+            .size(14)
+            .color(theme::color_for_board_temp(slot.temp)),
         text(format!("{} chips", slot.chips.len())).size(14),
     ]
     .spacing(20);
 
-    let grid = render_chip_grid(&slot.chips);
+    let grid = render_chip_grid(&slot.chips, color_mode);
 
     container(col![header, grid].spacing(10).width(Length::Shrink))
         .padding(15)
@@ -118,13 +125,13 @@ fn render_slot_grid(slot: &Slot) -> Element<'_, Message> {
         .into()
 }
 
-fn render_chip_grid(chips: &[Chip]) -> Column<'_, Message> {
+fn render_chip_grid(chips: &[Chip], color_mode: ColorMode) -> Column<'_, Message> {
     chips.chunks(CHIPS_PER_ROW).fold(
         Column::new().spacing(CHIP_SPACING).width(Length::Shrink),
         |col, row_chips| {
             let mut r = Row::new().spacing(CHIP_SPACING).width(Length::Shrink);
             for chip in row_chips {
-                r = r.push(render_chip(chip));
+                r = r.push(render_chip(chip, color_mode));
             }
             // Pad incomplete rows with empty spacers
             for _ in row_chips.len()..CHIPS_PER_ROW {
@@ -138,8 +145,8 @@ fn render_chip_grid(chips: &[Chip]) -> Column<'_, Message> {
     )
 }
 
-fn render_chip(chip: &Chip) -> Element<'_, Message> {
-    let (temp, errors) = (chip.temp, chip.errors);
+fn render_chip(chip: &Chip, color_mode: ColorMode) -> Element<'_, Message> {
+    let (temp, errors, crc) = (chip.temp, chip.errors, chip.crc);
 
     let content = col![
         // Top row: freq (left) and nonce (right)
@@ -166,6 +173,6 @@ fn render_chip(chip: &Chip) -> Element<'_, Message> {
         .padding(4)
         .align_x(iced::alignment::Horizontal::Center)
         .align_y(iced::alignment::Vertical::Center)
-        .style(move |_| theme::chip_cell(temp, errors))
+        .style(move |_| theme::chip_cell(temp, errors, crc, color_mode))
         .into()
 }

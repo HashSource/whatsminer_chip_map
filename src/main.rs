@@ -5,10 +5,10 @@ mod ui;
 
 use iced::{
     Element, Length, Task, Theme,
-    widget::{button, column, container, row, text, text_input},
+    widget::{button, column, container, pick_list, row, text, text_input},
 };
 
-use models::MinerData;
+use models::{ColorMode, MinerData};
 
 const DEFAULT_IP: &str = "192.6.8.15";
 const DEFAULT_USER: &str = "admin";
@@ -30,6 +30,7 @@ pub enum Message {
     DividerDragStart,
     DividerDragEnd,
     DividerDrag(f32),
+    ColorModeChanged(ColorMode),
 }
 
 struct App {
@@ -41,6 +42,7 @@ struct App {
     loading: bool,
     sidebar_width: f32,
     dragging_divider: bool,
+    color_mode: ColorMode,
 }
 
 impl Default for App {
@@ -54,6 +56,7 @@ impl Default for App {
             loading: false,
             sidebar_width: 500.0,
             dragging_divider: false,
+            color_mode: ColorMode::default(),
         }
     }
 }
@@ -109,6 +112,9 @@ impl App {
                     self.sidebar_width = x.clamp(150.0, 500.0);
                 }
             }
+            Message::ColorModeChanged(mode) => {
+                self.color_mode = mode;
+            }
         }
         Task::none()
     }
@@ -133,16 +139,30 @@ impl App {
             } else {
                 button(text("Fetch")).on_press(Message::Fetch).padding(10)
             },
+            text("Color:").size(14),
+            pick_list(
+                ColorMode::ALL,
+                Some(self.color_mode),
+                Message::ColorModeChanged,
+            )
+            .padding(8)
+            .width(120),
         ]
         .spacing(10)
-        .padding(10);
+        .padding(10)
+        .align_y(iced::Alignment::Center);
 
         let status = container(text(&self.status).size(14))
             .padding(10)
             .width(Length::Fill);
 
         let content: Element<'_, Message> = match &self.data {
-            Some(data) => ui::render_miner_view(data, self.sidebar_width, self.dragging_divider),
+            Some(data) => ui::render_miner_view(
+                data,
+                self.sidebar_width,
+                self.dragging_divider,
+                self.color_mode,
+            ),
             None => container(text("Click 'Fetch' to load miner data").size(16))
                 .padding(20)
                 .width(Length::Fill)
