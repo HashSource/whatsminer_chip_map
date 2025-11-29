@@ -27,3 +27,11 @@
 - Only flags chips **hotter** than the same position on other boards
 - If all boards have similar temps at position X, but one is higher → red flag
 - Range: 0-3 standard deviations → green to red
+
+### Nonce (performance detection)
+
+- Detects **underperforming** chips based on nonce count
+- Computes average nonce count per slot, then flags chips below average
+- Dead or failing chips show up red (0 nonces = 100% deficit)
+- Overperforming chips are ignored (green = no problem)
+- Range: 0-50% below slot average → green to red

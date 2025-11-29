@@ -11,6 +11,8 @@ pub enum ColorMode {
     Gradient,
     /// Statistical outliers: chips N std devs from local mean
     Outliers,
+    /// Nonce performance: chips underperforming vs slot average
+    Nonce,
 }
 
 impl ColorMode {
@@ -20,6 +22,7 @@ impl ColorMode {
         Self::Crc,
         Self::Gradient,
         Self::Outliers,
+        Self::Nonce,
     ];
 }
 
@@ -31,6 +34,7 @@ impl fmt::Display for ColorMode {
             Self::Crc => "CRC",
             Self::Gradient => "Gradient",
             Self::Outliers => "Outliers",
+            Self::Nonce => "Nonce",
         })
     }
 }

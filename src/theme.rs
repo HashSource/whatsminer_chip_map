@@ -18,6 +18,7 @@ const ERROR_RANGE: (f32, f32) = (0.0, 150.0);
 const CRC_RANGE: (f32, f32) = (0.0, 15.0);
 const LAPLACIAN_RANGE: (f32, f32) = (0.0, 15.0); // Degrees difference from neighbors
 const ZSCORE_RANGE: (f32, f32) = (0.0, 3.0); // Standard deviations
+const NONCE_DEFICIT_RANGE: (f32, f32) = (0.0, 50.0); // Percentage below average
 
 // Board temperature range for sidebar
 const BOARD_TEMP_RANGE: (f32, f32) = (30.0, 90.0);
@@ -120,6 +121,11 @@ pub fn chip_cell(
         ColorMode::Outliers => {
             let zscore = analysis.map_or(0.0, |a| a.cross_slot_zscore);
             normalize(zscore, ZSCORE_RANGE.0, ZSCORE_RANGE.1)
+        }
+        ColorMode::Nonce => {
+            // Higher deficit = worse performance = red
+            let deficit = analysis.map_or(0.0, |a| a.nonce_deficit);
+            normalize(deficit, NONCE_DEFICIT_RANGE.0, NONCE_DEFICIT_RANGE.1)
         }
     };
     let (bg, border) = gradient_colors(t);

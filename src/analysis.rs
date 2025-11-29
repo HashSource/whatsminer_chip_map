@@ -15,6 +15,9 @@ pub struct ChipAnalysis {
     /// Cross-slot z-score: how many std devs hotter than same position on other slots
     /// Positive = hotter than other boards at this position
     pub cross_slot_zscore: f32,
+    /// Nonce deficit: percentage below slot average (0 = average, 100 = zero nonces)
+    /// Higher = worse performance
+    pub nonce_deficit: f32,
 }
 
 /// Analyze all slots together for cross-slot comparison
@@ -70,6 +73,9 @@ fn analyze_single_slot(
     let remaining = num_domains.saturating_sub(1);
     let bottom_domains = 1 + remaining / 2;
 
+    // Compute slot average nonce for performance comparison
+    let slot_avg_nonce = compute_slot_avg_nonce(chips);
+
     chips
         .iter()
         .enumerate()
@@ -99,9 +105,13 @@ fn analyze_single_slot(
                 0.0
             };
 
+            // Nonce performance deficit
+            let nonce_deficit = compute_nonce_deficit(chip.nonce, slot_avg_nonce);
+
             ChipAnalysis {
                 gradient,
                 cross_slot_zscore,
+                nonce_deficit,
             }
         })
         .collect()
@@ -232,6 +242,34 @@ fn compute_hot_zscore(temp: i32, mean: f32, std: f32) -> f32 {
     deviation / std
 }
 
+/// Compute average nonce count for a slot
+fn compute_slot_avg_nonce(chips: &[crate::models::Chip]) -> f64 {
+    if chips.is_empty() {
+        return 0.0;
+    }
+    let total: i64 = chips.iter().map(|c| c.nonce).sum();
+    total as f64 / chips.len() as f64
+}
+
+/// Compute nonce deficit as percentage below slot average
+/// 0 = at or above average, 100 = zero nonces when average is non-zero
+fn compute_nonce_deficit(chip_nonce: i64, slot_avg: f64) -> f32 {
+    if slot_avg <= 0.0 {
+        // No nonces on slot, can't compute deficit
+        return 0.0;
+    }
+
+    let chip_nonce_f = chip_nonce as f64;
+    if chip_nonce_f >= slot_avg {
+        // At or above average - no deficit
+        return 0.0;
+    }
+
+    // Deficit as percentage: (avg - chip) / avg * 100
+    let deficit = (slot_avg - chip_nonce_f) / slot_avg * 100.0;
+    deficit as f32
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -245,6 +283,15 @@ mod tests {
         }
     }
 
+    fn make_chip_with_nonce(id: i32, temp: i32, nonce: i64) -> Chip {
+        Chip {
+            id,
+            temp,
+            nonce,
+            ..Default::default()
+        }
+    }
+
     fn make_slot(id: i32, temps: &[i32]) -> Slot {
         Slot {
             id,
@@ -252,6 +299,18 @@ mod tests {
                 .iter()
                 .enumerate()
                 .map(|(i, &t)| make_chip(i as i32, t))
+                .collect(),
+            ..Default::default()
+        }
+    }
+
+    fn make_slot_with_nonces(id: i32, nonces: &[i64]) -> Slot {
+        Slot {
+            id,
+            chips: nonces
+                .iter()
+                .enumerate()
+                .map(|(i, &n)| make_chip_with_nonce(i as i32, 50, n))
                 .collect(),
             ..Default::default()
         }
@@ -401,6 +460,72 @@ mod tests {
             analysis[0][3].gradient > 30.0,
             "D3 should flag, got {}",
             analysis[0][3].gradient
+        );
+    }
+
+    #[test]
+    fn test_nonce_uniform_no_deficit() {
+        // All chips have same nonce count - no deficit
+        let slots = vec![make_slot_with_nonces(0, &[1000, 1000, 1000])];
+        let analysis = analyze_all_slots(&slots, 1);
+
+        for (i, a) in analysis[0].iter().enumerate() {
+            assert!(
+                a.nonce_deficit < 0.1,
+                "Chip {} should have no deficit, got {}",
+                i,
+                a.nonce_deficit
+            );
+        }
+    }
+
+    #[test]
+    fn test_nonce_underperformer_detected() {
+        // Chip 1 has half the nonces of others
+        // Average = (1000 + 500 + 1000) / 3 = 833
+        // Chip 1 deficit = (833 - 500) / 833 * 100 = 40%
+        let slots = vec![make_slot_with_nonces(0, &[1000, 500, 1000])];
+        let analysis = analyze_all_slots(&slots, 1);
+
+        // Chip 0 and 2 are above average - no deficit
+        assert!(analysis[0][0].nonce_deficit < 1.0);
+        assert!(analysis[0][2].nonce_deficit < 1.0);
+
+        // Chip 1 is underperforming - significant deficit
+        assert!(
+            analysis[0][1].nonce_deficit > 30.0,
+            "Chip 1 should have ~40% deficit, got {}",
+            analysis[0][1].nonce_deficit
+        );
+    }
+
+    #[test]
+    fn test_nonce_dead_chip_detected() {
+        // Chip 1 has zero nonces - dead chip
+        // Average = (1000 + 0 + 1000) / 3 = 666
+        // Chip 1 deficit = (666 - 0) / 666 * 100 = 100%
+        let slots = vec![make_slot_with_nonces(0, &[1000, 0, 1000])];
+        let analysis = analyze_all_slots(&slots, 1);
+
+        // Chip 1 should have 100% deficit (or close to it)
+        assert!(
+            analysis[0][1].nonce_deficit > 90.0,
+            "Dead chip should have ~100% deficit, got {}",
+            analysis[0][1].nonce_deficit
+        );
+    }
+
+    #[test]
+    fn test_nonce_overperformer_no_deficit() {
+        // Chip 1 has MORE nonces than average - should not flag
+        let slots = vec![make_slot_with_nonces(0, &[500, 1500, 500])];
+        let analysis = analyze_all_slots(&slots, 1);
+
+        // Chip 1 is above average - no deficit
+        assert!(
+            analysis[0][1].nonce_deficit < 0.1,
+            "Overperformer should have no deficit, got {}",
+            analysis[0][1].nonce_deficit
         );
     }
 }
