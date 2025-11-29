@@ -14,6 +14,7 @@ pub enum Language {
     Ukrainian,
     Polish,
     Kazakh,
+    Arabic,
 }
 
 impl Language {
@@ -26,6 +27,7 @@ impl Language {
         Self::Ukrainian,
         Self::Polish,
         Self::Kazakh,
+        Self::Arabic,
     ];
 }
 
@@ -42,6 +44,7 @@ impl fmt::Display for Language {
             Self::Ukrainian => "uk", // Ukrainian (Українська)
             Self::Polish => "pl",    // Polish (Polski)
             Self::Kazakh => "kk",    // Kazakh (Қазақша)
+            Self::Arabic => "ar",    // Arabic (العربية)
         })
     }
 }
@@ -62,6 +65,7 @@ impl Tr {
             Language::Ukrainian => "Карта чіпів WhatsMiner",
             Language::Polish => "Mapa chipów WhatsMiner",
             Language::Kazakh => "WhatsMiner чип картасы",
+            Language::Arabic => "خريطة شرائح WhatsMiner",
         }
     }
 
@@ -76,6 +80,7 @@ impl Tr {
             Language::Ukrainian => "Готово",
             Language::Polish => "Gotowe",
             Language::Kazakh => "Дайын",
+            Language::Arabic => "جاهز",
         }
     }
 
@@ -89,6 +94,7 @@ impl Tr {
             Language::Ukrainian => "Підключення...",
             Language::Polish => "Łączenie...",
             Language::Kazakh => "Қосылуда...",
+            Language::Arabic => "جاري الاتصال...",
         }
     }
 
@@ -101,6 +107,7 @@ impl Tr {
             Language::Ukrainian => "Помилка",
             Language::Polish => "Błąd",
             Language::Kazakh => "Қате",
+            Language::Arabic => "خطأ",
         }
     }
 
@@ -119,6 +126,7 @@ impl Tr {
             Language::Ukrainian => "Користувач",
             Language::Polish => "Użytkownik",
             Language::Kazakh => "Пайдаланушы",
+            Language::Arabic => "مستخدم",
         }
     }
 
@@ -132,6 +140,7 @@ impl Tr {
             Language::Ukrainian => "Пароль",
             Language::Polish => "Hasło",
             Language::Kazakh => "Құпиясөз",
+            Language::Arabic => "كلمة السر",
         }
     }
 
@@ -146,6 +155,7 @@ impl Tr {
             Language::Ukrainian => "Завантажити",
             Language::Polish => "Pobierz",
             Language::Kazakh => "Жүктеу",
+            Language::Arabic => "جلب",
         }
     }
 
@@ -159,6 +169,7 @@ impl Tr {
             Language::Ukrainian => "Завантаження...",
             Language::Polish => "Ładowanie...",
             Language::Kazakh => "Жүктелуде...",
+            Language::Arabic => "جاري التحميل...",
         }
     }
 
@@ -172,6 +183,7 @@ impl Tr {
             Language::Ukrainian => "Колір:",
             Language::Polish => "Kolor:",
             Language::Kazakh => "Түс:",
+            Language::Arabic => "اللون:",
         }
     }
 
@@ -185,6 +197,7 @@ impl Tr {
             Language::Ukrainian => "Мова:",
             Language::Polish => "Język:",
             Language::Kazakh => "Тіл:",
+            Language::Arabic => "اللغة:",
         }
     }
 
@@ -198,6 +211,7 @@ impl Tr {
             Language::Ukrainian => "Натисніть 'Завантажити' для отримання даних",
             Language::Polish => "Kliknij 'Pobierz' aby załadować dane",
             Language::Kazakh => "Деректерді жүктеу үшін 'Жүктеу' басыңыз",
+            Language::Arabic => "انقر 'جلب' لتحميل بيانات المُعدِّن",
         }
     }
 
@@ -212,6 +226,7 @@ impl Tr {
             Language::Ukrainian => "── Сист. інфо ──",
             Language::Polish => "── Info Systemu ──",
             Language::Kazakh => "── Жүйе ақпараты ──",
+            Language::Arabic => "── معلومات النظام ──",
         }
     }
 
@@ -233,6 +248,7 @@ impl Tr {
             Language::Ukrainian => "Слот",
             Language::Polish => "Slot",
             Language::Kazakh => "Слот",
+            Language::Arabic => "فتحة",
         }
     }
 
@@ -245,6 +261,7 @@ impl Tr {
             Language::Ukrainian => "чіпів",
             Language::Polish => "chipów",
             Language::Kazakh => "чип",
+            Language::Arabic => "شريحة",
         }
     }
 
@@ -258,6 +275,7 @@ impl Tr {
             Language::Ukrainian => "слотів",
             Language::Polish => "slotów",
             Language::Kazakh => "слот",
+            Language::Arabic => "فتحات",
         }
     }
 
@@ -272,6 +290,7 @@ impl Tr {
             Language::Ukrainian => "Температура",
             Language::Polish => "Temperatura",
             Language::Kazakh => "Температура",
+            Language::Arabic => "الحرارة",
         }
     }
 
@@ -285,6 +304,7 @@ impl Tr {
             Language::Ukrainian => "Помилки",
             Language::Polish => "Błędy",
             Language::Kazakh => "Қателер",
+            Language::Arabic => "الأخطاء",
         }
     }
 
@@ -302,6 +322,7 @@ impl Tr {
             Language::Ukrainian => "Градієнт",
             Language::Polish => "Gradient",
             Language::Kazakh => "Градиент",
+            Language::Arabic => "التدرج",
         }
     }
 
@@ -315,6 +336,7 @@ impl Tr {
             Language::Ukrainian => "Викиди",
             Language::Polish => "Odstające",
             Language::Kazakh => "Ауытқулар",
+            Language::Arabic => "القيم الشاذة",
         }
     }
 
@@ -326,6 +348,7 @@ impl Tr {
             Language::Chinese => "随机数",
             Language::Ukrainian => "Нонс",
             Language::Kazakh => "Нонс",
+            Language::Arabic => "نونس",
         }
     }
 }

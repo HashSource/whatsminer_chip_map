@@ -44,4 +44,4 @@
 
 ## Languages
 
-English (en), Russian (ru), Spanish (es), Persian (fa), Chinese (zh), Ukrainian (uk), Polish (pl), Kazakh (kk)
+English (en), Russian (ru), Spanish (es), Persian (fa), Chinese (zh), Ukrainian (uk), Polish (pl), Kazakh (kk), Arabic (ar)
