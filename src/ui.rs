@@ -84,7 +84,7 @@ fn sidebar<'a>(data: &'a MinerData, system_info: Option<&'a SystemInfo>) -> Colu
             .push(text(&info.model).size(12))
             .push(text(&info.hardware_info).size(11))
             .push(text(format!("FW: {}", info.firmware_version)).size(11))
-            .push(text("").size(8)); // spacer
+            .push(Space::with_height(8)); // spacer
     }
 
     for slot in &data.slots {
@@ -115,17 +115,17 @@ fn infer_chips_per_domain(chip_count: usize) -> usize {
     // Common chips_per_domain values in WhatsMiner boards: 2, 3, 4, 5, 6
     // Pick the smallest that divides evenly and gives reasonable domain count
     for cpd in [3, 2, 4, 5, 6] {
-        if chip_count % cpd == 0 {
+        if chip_count.is_multiple_of(cpd) {
             let domains = chip_count / cpd;
             // Reasonable domain count: 20-80 for most boards
-            if domains >= 20 && domains <= 100 {
+            if (20..=100).contains(&domains) {
                 return cpd;
             }
         }
     }
     // Fallback for smaller boards or unusual counts
     for cpd in [2, 3, 4, 5, 6] {
-        if chip_count % cpd == 0 {
+        if chip_count.is_multiple_of(cpd) {
             return cpd;
         }
     }
@@ -144,14 +144,16 @@ fn slot_grid<'a>(
 
     // Calculate domains (columns) for this slot
     let domains = if chips_per_domain > 0 {
-        (slot.chips.len() + chips_per_domain - 1) / chips_per_domain
+        slot.chips.len().div_ceil(chips_per_domain)
     } else {
         1
     };
 
-    // Calculate section split for layout info
-    let bottom_domains = (domains + 1) / 2;
-    let top_domains = domains - bottom_domains;
+    // Calculate section split for layout info (must match chip_grid logic)
+    // First domain sticks out, then split remaining in half
+    let remaining = domains.saturating_sub(1);
+    let bottom_domains = 1 + remaining / 2;
+    let top_domains = remaining - (remaining / 2);
 
     let layout_info = format!(
         "{}d × {}c/d  [{}+{} snake]",
@@ -184,7 +186,7 @@ fn chip_grid(
     // Physical layout: chips are arranged in domains (vertical stacks)
     // Board is split into 2 sections with snake pattern
     let num_domains = if chips_per_domain > 0 {
-        (chips.len() + chips_per_domain - 1) / chips_per_domain
+        chips.len().div_ceil(chips_per_domain)
     } else {
         1
     };
@@ -238,18 +240,18 @@ fn render_section(
     end_domain: usize,
     reversed: bool,
 ) -> Column<'_, Message> {
+    let domain_count = end_domain - start_domain;
     let mut section = Column::new().spacing(CHIP_SPACING).width(Length::Shrink);
 
     for row_idx in 0..chips_per_domain {
         let mut r = Row::new().spacing(CHIP_SPACING).width(Length::Shrink);
 
-        let domain_range: Vec<usize> = if reversed {
-            (start_domain..end_domain).rev().collect()
-        } else {
-            (start_domain..end_domain).collect()
-        };
-
-        for domain_idx in domain_range {
+        for i in 0..domain_count {
+            let domain_idx = if reversed {
+                end_domain - 1 - i
+            } else {
+                start_domain + i
+            };
             let chip_idx = domain_idx * chips_per_domain + row_idx;
             if chip_idx < chips.len() {
                 r = r.push(chip_cell(&chips[chip_idx], color_mode));

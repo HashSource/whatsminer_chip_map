@@ -15,6 +15,8 @@ pub async fn fetch_all(
 ) -> Result<(MinerData, SystemInfo), String> {
     let client = Arc::new(
         Client::builder()
+            // SECURITY: Accept self-signed certs - required for miner's HTTPS interface.
+            // This is safe in this context as we're connecting to a known local device.
             .danger_accept_invalid_certs(true)
             .cookie_store(true)
             .timeout(Duration::from_secs(TIMEOUT_SECS))

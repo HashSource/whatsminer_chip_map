@@ -105,7 +105,7 @@ pub fn lookup(model: &str) -> Option<&'static MinerConfig> {
     }
 
     // Try matching just the series (M50S, M60S, etc.)
-    if let Some(series_end) = normalized.find(|c: char| c == 'V' || c == '+') {
+    if let Some(series_end) = normalized.find(['V', '+']) {
         let series = &normalized[..series_end];
         if let Some(cfg) = CONFIGS.iter().find(|c| c.model.starts_with(series)) {
             return Some(cfg);

@@ -53,9 +53,9 @@ fn normalize(value: f32, min: f32, max: f32) -> f32 {
 
 /// Get gradient color pair (background, border) for normalized position
 fn gradient_colors(t: f32) -> (Color, Color) {
-    for i in 1..GRADIENT_STOPS.len() {
-        let (pos_a, bg_a, border_a) = GRADIENT_STOPS[i - 1];
-        let (pos_b, bg_b, border_b) = GRADIENT_STOPS[i];
+    for window in GRADIENT_STOPS.windows(2) {
+        let (pos_a, bg_a, border_a) = window[0];
+        let (pos_b, bg_b, border_b) = window[1];
         if t <= pos_b {
             let local_t = (t - pos_a) / (pos_b - pos_a);
             return (
@@ -64,21 +64,23 @@ fn gradient_colors(t: f32) -> (Color, Color) {
             );
         }
     }
-    let last = GRADIENT_STOPS.last().unwrap();
-    (last.1, last.2)
+    // Fallback to last stop (GRADIENT_STOPS is never empty)
+    let (_, bg, border) = GRADIENT_STOPS[GRADIENT_STOPS.len() - 1];
+    (bg, border)
 }
 
 /// Get gradient text color for normalized position
 fn gradient_text_color(t: f32) -> Color {
-    for i in 1..TEXT_GRADIENT_STOPS.len() {
-        let (pos_a, color_a) = TEXT_GRADIENT_STOPS[i - 1];
-        let (pos_b, color_b) = TEXT_GRADIENT_STOPS[i];
+    for window in TEXT_GRADIENT_STOPS.windows(2) {
+        let (pos_a, color_a) = window[0];
+        let (pos_b, color_b) = window[1];
         if t <= pos_b {
             let local_t = (t - pos_a) / (pos_b - pos_a);
             return lerp_color(color_a, color_b, local_t);
         }
     }
-    TEXT_GRADIENT_STOPS.last().unwrap().1
+    // Fallback to last stop (TEXT_GRADIENT_STOPS is never empty)
+    TEXT_GRADIENT_STOPS[TEXT_GRADIENT_STOPS.len() - 1].1
 }
 
 /// Text color for chip temperature display (gradient)
