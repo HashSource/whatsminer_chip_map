@@ -7,6 +7,7 @@ edition = "2024"
 iced = { git = "https://github.com/iced-rs/iced", branch = "master", features = [
     "tokio",
     "advanced-shaping",
+    "image",
 ] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 reqwest = { version = "0.12", features = [

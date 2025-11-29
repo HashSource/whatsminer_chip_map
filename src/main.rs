@@ -11,15 +11,26 @@ mod ui;
 use iced::{
     Element, Length, Task, Theme,
     widget::{button, column, container, pick_list, row, text, text_input},
+    window,
 };
 
 use i18n::{Language, LocalizedColorMode, Tr};
 use models::{ColorMode, MinerData, SystemInfo};
 
+/// Embedded application icon (PNG)
+const ICON_DATA: &[u8] = include_bytes!("../assets/icon.png");
+
 fn main() -> iced::Result {
+    // None for format = auto-detect from file content
+    let icon = window::icon::from_file_data(ICON_DATA, None).ok();
+
     iced::application(App::new, App::update, App::view)
         .title(App::title)
         .theme(App::theme)
+        .window(window::Settings {
+            icon,
+            ..Default::default()
+        })
         .run()
 }
 
