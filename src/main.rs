@@ -46,7 +46,7 @@ impl App {
     fn new() -> (Self, Task<Message>) {
         (
             Self {
-                ip: "192.6.8.15".into(),
+                ip: "192.7.1.193".into(),
                 user: "admin".into(),
                 pass: "admin".into(),
                 status: "Ready".into(),

@@ -11,70 +11,99 @@ const BG_PANEL: Color = color!(0x1A, 0x1A, 0x1A);
 const BORDER_SUBTLE: Color = color!(0x3A, 0x3A, 0x3A);
 const BORDER_ACCENT: Color = color!(0x4A, 0x4A, 0x4A);
 
-// Temperature thresholds from WhatsMiner firmware:
-// - Chip: ft_chip_temp_warn 95-105°C, chip_temp_protect 110-120°C
-// - Board: cool_temp 30-38°C, board_temp_overheat/protect 80-90°C
-const CHIP_THRESHOLDS: [i32; 3] = [70, 85, 95]; // cool, warm, hot
-const BOARD_THRESHOLDS: [i32; 3] = [50, 65, 80];
-const ERROR_THRESHOLDS: [i32; 3] = [20, 50, 100];
-const CRC_THRESHOLDS: [i32; 3] = [1, 5, 10];
+// Gradient ranges (min, max) for each mode
+const TEMP_RANGE: (f32, f32) = (40.0, 100.0);
+const ERROR_RANGE: (f32, f32) = (0.0, 150.0);
+const CRC_RANGE: (f32, f32) = (0.0, 15.0);
 
-/// Severity level for threshold-based coloring
-#[derive(Clone, Copy)]
-enum Severity {
-    Cool,
-    Warm,
-    Hot,
-    Critical,
-}
+// Board temperature range for sidebar
+const BOARD_TEMP_RANGE: (f32, f32) = (30.0, 90.0);
 
-impl Severity {
-    fn from_value(value: i32, thresholds: [i32; 3]) -> Self {
-        match value {
-            v if v >= thresholds[2] => Self::Critical,
-            v if v >= thresholds[1] => Self::Hot,
-            v if v >= thresholds[0] => Self::Warm,
-            _ => Self::Cool,
-        }
-    }
+/// Gradient color stops: Green → Yellow → Orange → Red
+/// Each stop is (position, background, border)
+const GRADIENT_STOPS: [(f32, Color, Color); 4] = [
+    (0.0, color!(0x16, 0x4E, 0x32), color!(0x22, 0xC5, 0x5E)), // Green
+    (0.4, color!(0x71, 0x5B, 0x0B), color!(0xF5, 0xCE, 0x0B)), // Yellow
+    (0.7, color!(0x7C, 0x2D, 0x12), color!(0xEA, 0x58, 0x0C)), // Orange
+    (1.0, color!(0x7F, 0x1D, 0x1D), color!(0xDC, 0x26, 0x26)), // Red
+];
 
-    const fn text_color(self) -> Color {
-        match self {
-            Self::Cool => color!(0x4A, 0xDE, 0x80),     // Green
-            Self::Warm => color!(0xFB, 0xBF, 0x24),     // Amber
-            Self::Hot => color!(0xF9, 0x73, 0x16),      // Orange
-            Self::Critical => color!(0xEF, 0x44, 0x44), // Red
-        }
-    }
+/// Text color gradient stops
+const TEXT_GRADIENT_STOPS: [(f32, Color); 4] = [
+    (0.0, color!(0x4A, 0xDE, 0x80)), // Green
+    (0.4, color!(0xFB, 0xCF, 0x24)), // Yellow
+    (0.7, color!(0xF9, 0x73, 0x16)), // Orange
+    (1.0, color!(0xEF, 0x44, 0x44)), // Red
+];
 
-    const fn chip_colors(self) -> (Color, Color) {
-        match self {
-            Self::Cool => (color!(0x16, 0x4E, 0x32), color!(0x22, 0xC5, 0x5E)),
-            Self::Warm => (color!(0x71, 0x4B, 0x0B), color!(0xF5, 0x9E, 0x0B)),
-            Self::Hot => (color!(0x7C, 0x2D, 0x12), color!(0xEA, 0x58, 0x0C)),
-            Self::Critical => (color!(0x7F, 0x1D, 0x1D), color!(0xDC, 0x26, 0x26)),
-        }
+/// Linearly interpolate between two colors
+fn lerp_color(a: Color, b: Color, t: f32) -> Color {
+    Color {
+        r: a.r + (b.r - a.r) * t,
+        g: a.g + (b.g - a.g) * t,
+        b: a.b + (b.b - a.b) * t,
+        a: a.a + (b.a - a.a) * t,
     }
 }
 
-/// Text color for chip temperature display
+/// Normalize value to 0.0-1.0 range
+fn normalize(value: f32, min: f32, max: f32) -> f32 {
+    ((value - min) / (max - min)).clamp(0.0, 1.0)
+}
+
+/// Get gradient color pair (background, border) for normalized position
+fn gradient_colors(t: f32) -> (Color, Color) {
+    for i in 1..GRADIENT_STOPS.len() {
+        let (pos_a, bg_a, border_a) = GRADIENT_STOPS[i - 1];
+        let (pos_b, bg_b, border_b) = GRADIENT_STOPS[i];
+        if t <= pos_b {
+            let local_t = (t - pos_a) / (pos_b - pos_a);
+            return (
+                lerp_color(bg_a, bg_b, local_t),
+                lerp_color(border_a, border_b, local_t),
+            );
+        }
+    }
+    let last = GRADIENT_STOPS.last().unwrap();
+    (last.1, last.2)
+}
+
+/// Get gradient text color for normalized position
+fn gradient_text_color(t: f32) -> Color {
+    for i in 1..TEXT_GRADIENT_STOPS.len() {
+        let (pos_a, color_a) = TEXT_GRADIENT_STOPS[i - 1];
+        let (pos_b, color_b) = TEXT_GRADIENT_STOPS[i];
+        if t <= pos_b {
+            let local_t = (t - pos_a) / (pos_b - pos_a);
+            return lerp_color(color_a, color_b, local_t);
+        }
+    }
+    TEXT_GRADIENT_STOPS.last().unwrap().1
+}
+
+/// Text color for chip temperature display (gradient)
+#[allow(clippy::cast_precision_loss)] // temp values fit in f32
 pub fn color_for_chip_temp(temp: i32) -> Color {
-    Severity::from_value(temp, CHIP_THRESHOLDS).text_color()
+    let t = normalize(temp as f32, TEMP_RANGE.0, TEMP_RANGE.1);
+    gradient_text_color(t)
 }
 
-/// Text color for board temperature display
+/// Text color for board temperature display (gradient)
+#[allow(clippy::cast_possible_truncation)] // temp values fit in f32
 pub fn color_for_board_temp(temp: f64) -> Color {
-    Severity::from_value(temp as i32, BOARD_THRESHOLDS).text_color()
+    let t = normalize(temp as f32, BOARD_TEMP_RANGE.0, BOARD_TEMP_RANGE.1);
+    gradient_text_color(t)
 }
 
-/// Chip cell style based on color mode
+/// Chip cell style with gradient coloring based on mode
+#[allow(clippy::cast_precision_loss)] // small integer values fit in f32
 pub fn chip_cell(temp: i32, errors: i32, crc: i32, mode: ColorMode) -> container::Style {
-    let severity = match mode {
-        ColorMode::Temperature => Severity::from_value(temp, CHIP_THRESHOLDS),
-        ColorMode::Errors => Severity::from_value(errors, ERROR_THRESHOLDS),
-        ColorMode::Crc => Severity::from_value(crc, CRC_THRESHOLDS),
+    let t = match mode {
+        ColorMode::Temperature => normalize(temp as f32, TEMP_RANGE.0, TEMP_RANGE.1),
+        ColorMode::Errors => normalize(errors as f32, ERROR_RANGE.0, ERROR_RANGE.1),
+        ColorMode::Crc => normalize(crc as f32, CRC_RANGE.0, CRC_RANGE.1),
     };
-    let (bg, border) = severity.chip_colors();
+    let (bg, border) = gradient_colors(t);
 
     container::Style {
         text_color: Some(Color::WHITE),
