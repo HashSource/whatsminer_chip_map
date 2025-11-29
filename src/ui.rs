@@ -9,6 +9,7 @@ use iced::{
 use crate::Message;
 use crate::analysis::{self, ChipAnalysis};
 use crate::config;
+use crate::i18n::{Language, Tr};
 use crate::models::{Chip, ColorMode, MinerData, Slot, SystemInfo};
 use crate::theme;
 
@@ -21,6 +22,7 @@ pub fn miner_view<'a>(
     sidebar_width: f32,
     dragging: bool,
     color_mode: ColorMode,
+    lang: Language,
 ) -> Element<'a, Message> {
     // Look up miner config based on model name for physical layout
     let miner_config = system_info.and_then(|info| config::lookup(&info.model));
@@ -38,12 +40,18 @@ pub fn miner_view<'a>(
     // Compute cross-slot analysis for gradient/outlier/nonce modes
     let all_analysis = analysis::analyze_all_slots(&data.slots, chips_per_domain);
 
-    let sidebar = sidebar(data, system_info, &all_analysis);
+    let sidebar = sidebar(data, system_info, &all_analysis, lang);
 
     let grids = data.slots.iter().zip(all_analysis.iter()).fold(
         Column::new().spacing(25).width(Length::Shrink),
         |col, (slot, slot_analysis)| {
-            col.push(slot_grid(slot, color_mode, chips_per_domain, slot_analysis))
+            col.push(slot_grid(
+                slot,
+                color_mode,
+                chips_per_domain,
+                slot_analysis,
+                lang,
+            ))
         },
     );
 
@@ -90,6 +98,7 @@ fn sidebar<'a>(
     data: &'a MinerData,
     system_info: Option<&'a SystemInfo>,
     all_analysis: &[Vec<ChipAnalysis>],
+    lang: Language,
 ) -> Column<'a, Message> {
     let mut col = Column::new().spacing(2).padding(5).width(Length::Fill);
 
@@ -97,19 +106,19 @@ fn sidebar<'a>(
     if let Some(info) = system_info {
         col = col
             .push(
-                text("── System Info ──")
+                text(Tr::system_info(lang))
                     .size(13)
                     .color(theme::BRAND_ORANGE),
             )
             .push(text(&info.model).size(12))
             .push(text(&info.hardware_info).size(11))
-            .push(text(format!("FW: {}", info.firmware_version)).size(11))
+            .push(text(format!("{}: {}", Tr::firmware(lang), info.firmware_version)).size(11))
             .push(Space::with_height(8)); // spacer
     }
 
     for (slot_idx, slot) in data.slots.iter().enumerate() {
         col = col.push(
-            text(format!("── Slot {} ──", slot.id))
+            text(format!("── {} {} ──", Tr::slot(lang), slot.id))
                 .size(13)
                 .color(theme::BRAND_ORANGE),
         );
@@ -175,6 +184,7 @@ fn slot_grid<'a>(
     color_mode: ColorMode,
     chips_per_domain: usize,
     analysis: &[ChipAnalysis],
+    lang: Language,
 ) -> Element<'a, Message> {
     // Calculate domains (columns) for this slot
     let domains = if chips_per_domain > 0 {
@@ -195,12 +205,12 @@ fn slot_grid<'a>(
     );
 
     let header = row![
-        text(format!("Slot {}", slot.id)).size(18),
+        text(format!("{} {}", Tr::slot(lang), slot.id)).size(18),
         text(format!("{}MHz", slot.freq)).size(14),
         text(format!("{:.1}°C", slot.temp))
             .size(14)
             .color(theme::color_for_board_temp(slot.temp)),
-        text(format!("{} chips", slot.chips.len())).size(14),
+        text(format!("{} {}", slot.chips.len(), Tr::chips(lang))).size(14),
         text(layout_info).size(12),
     ]
     .spacing(20);

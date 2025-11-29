@@ -3,6 +3,7 @@
 mod analysis;
 mod api;
 mod config;
+mod i18n;
 mod models;
 mod theme;
 mod ui;
@@ -12,6 +13,7 @@ use iced::{
     widget::{button, column, container, pick_list, row, text, text_input},
 };
 
+use i18n::{Language, LocalizedColorMode, Tr};
 use models::{ColorMode, MinerData, SystemInfo};
 
 fn main() -> iced::Result {
@@ -30,7 +32,8 @@ pub enum Message {
     DividerDragStart,
     DividerDragEnd,
     DividerDrag(f32),
-    ColorModeChanged(ColorMode),
+    ColorModeChanged(LocalizedColorMode),
+    LanguageChanged(Language),
 }
 
 #[derive(Default)]
@@ -45,17 +48,20 @@ struct App {
     sidebar_width: f32,
     dragging: bool,
     color_mode: ColorMode,
+    language: Language,
 }
 
 impl App {
     fn new() -> (Self, Task<Message>) {
+        let language = Language::default();
         (
             Self {
                 ip: "192.7.1.193".into(),
                 user: "admin".into(),
                 pass: "admin".into(),
-                status: "Ready".into(),
+                status: Tr::ready(language).into(),
                 sidebar_width: 500.0,
+                language,
                 ..Default::default()
             },
             Task::none(),
@@ -63,13 +69,14 @@ impl App {
     }
 
     fn update(&mut self, msg: Message) -> Task<Message> {
+        let lang = self.language;
         match msg {
             Message::IpChanged(v) => self.ip = v,
             Message::UserChanged(v) => self.user = v,
             Message::PassChanged(v) => self.pass = v,
             Message::Fetch => {
                 self.loading = true;
-                self.status = "Connecting...".into();
+                self.status = Tr::connecting(lang).into();
                 let (ip, user, pass) = (self.ip.clone(), self.user.clone(), self.pass.clone());
                 return Task::perform(
                     async move { api::fetch_all(&ip, &user, &pass).await },
@@ -78,13 +85,19 @@ impl App {
             }
             Message::Fetched(Ok((data, info))) => {
                 self.loading = false;
-                self.status = format!("{} slots, {} chips", data.slots.len(), data.total_chips());
+                self.status = format!(
+                    "{} {}, {} {}",
+                    data.slots.len(),
+                    Tr::slots(lang),
+                    data.total_chips(),
+                    Tr::chips(lang)
+                );
                 self.data = Some(data);
                 self.system_info = Some(info);
             }
             Message::Fetched(Err(e)) => {
                 self.loading = false;
-                self.status = format!("Error: {e}");
+                self.status = format!("{}: {e}", Tr::error(lang));
                 self.data = None;
                 self.system_info = None;
             }
@@ -94,39 +107,58 @@ impl App {
                 self.sidebar_width = x.clamp(150.0, 500.0);
             }
             Message::DividerDrag(_) => {}
-            Message::ColorModeChanged(mode) => self.color_mode = mode,
+            Message::ColorModeChanged(lcm) => self.color_mode = lcm.mode,
+            Message::LanguageChanged(l) => {
+                self.language = l;
+                // Update status message if it's a static message
+                if self.data.is_none() && !self.loading {
+                    self.status = Tr::ready(l).into();
+                }
+            }
         }
         Task::none()
     }
 
     fn view(&self) -> Element<'_, Message> {
+        let lang = self.language;
+        let selected_color = LocalizedColorMode {
+            mode: self.color_mode,
+            lang,
+        };
+
         let controls = row![
-            text_input("IP", &self.ip)
+            text_input(Tr::ip(lang), &self.ip)
                 .on_input(Message::IpChanged)
                 .padding(10)
                 .width(200),
-            text_input("User", &self.user)
+            text_input(Tr::user(lang), &self.user)
                 .on_input(Message::UserChanged)
                 .padding(10)
                 .width(120),
-            text_input("Pass", &self.pass)
+            text_input(Tr::pass(lang), &self.pass)
                 .on_input(Message::PassChanged)
                 .padding(10)
                 .width(120)
                 .secure(true),
             if self.loading {
-                button(text("Loading...")).padding(10)
+                button(text(Tr::loading(lang))).padding(10)
             } else {
-                button(text("Fetch")).on_press(Message::Fetch).padding(10)
+                button(text(Tr::fetch(lang)))
+                    .on_press(Message::Fetch)
+                    .padding(10)
             },
-            text("Color:").size(14),
+            text(Tr::color(lang)).size(14),
             pick_list(
-                ColorMode::ALL,
-                Some(self.color_mode),
+                LocalizedColorMode::all(lang),
+                Some(selected_color),
                 Message::ColorModeChanged
             )
             .padding(8)
             .width(120),
+            text(Tr::lang(lang)).size(14),
+            pick_list(Language::ALL, Some(lang), Message::LanguageChanged)
+                .padding(8)
+                .width(100),
         ]
         .spacing(10)
         .padding(10)
@@ -143,8 +175,9 @@ impl App {
                 self.sidebar_width,
                 self.dragging,
                 self.color_mode,
+                lang,
             ),
-            None => container(text("Click 'Fetch' to load miner data").size(16))
+            None => container(text(Tr::click_fetch(lang)).size(16))
                 .padding(20)
                 .width(Length::Fill)
                 .height(Length::Fill)
