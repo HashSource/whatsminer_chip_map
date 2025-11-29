@@ -20,7 +20,7 @@ jobs:
           RUSTTARGET: x86_64-pc-windows-gnu
           ARCHIVE_TYPES: "zip"
           ARCHIVE_NAME: "whatsminer_chip_map_x86_64-pc-windows-gnu"
-          EXTRA_FILES: "README.md LICENSE demo_temp.png demo_nonce.png"
+          EXTRA_FILES: "README.md LICENSE demo_temp.png demo_nonce.png demo_slot_link.png"
           UPLOAD_MODE: "none"
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -44,7 +44,7 @@ jobs:
       - name: Package
         run: |
           mkdir -p output
-          zip -j output/whatsminer_chip_map_x86_64-unknown-linux-gnu.zip target/release/whatsminer_chip_map README.md LICENSE demo_temp.png demo_nonce.png
+          zip -j output/whatsminer_chip_map_x86_64-unknown-linux-gnu.zip target/release/whatsminer_chip_map README.md LICENSE demo_temp.png demo_nonce.png demo_slot_link.png
           cd output && sha256sum whatsminer_chip_map_x86_64-unknown-linux-gnu.zip > whatsminer_chip_map_x86_64-unknown-linux-gnu.zip.sha256sum
       - name: Upload artifact
         uses: actions/upload-artifact@v4

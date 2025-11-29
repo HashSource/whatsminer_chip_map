@@ -12,6 +12,10 @@
 
 ![demo](./demo_nonce.png)
 
+### Slot Linking for Hydro/Immersion models
+
+![demo](./demo_slot_link.png)
+
 ## Analysis Modes
 
 ### Gradient (local hotspots)
