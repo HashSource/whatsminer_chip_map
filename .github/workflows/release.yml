@@ -6,13 +6,9 @@ permissions:
   contents: write
 
 jobs:
-  build:
-    name: Build ${{ matrix.target }}
+  build-windows:
+    name: Build Windows
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        target: [x86_64-pc-windows-gnu, x86_64-unknown-linux-gnu]
     steps:
       - uses: actions/checkout@v4
       - name: Compile
@@ -21,20 +17,44 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           TOOLCHAIN_VERSION: stable
-          RUSTTARGET: ${{ matrix.target }}
+          RUSTTARGET: x86_64-pc-windows-gnu
           ARCHIVE_TYPES: "zip"
-          ARCHIVE_NAME: "whatsminer_chip_map_${{ matrix.target }}"
+          ARCHIVE_NAME: "whatsminer_chip_map_x86_64-pc-windows-gnu"
           EXTRA_FILES: "README.md"
           UPLOAD_MODE: "none"
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: whatsminer_chip_map-${{ matrix.target }}
+          name: whatsminer_chip_map-windows
+          path: output/*.zip*
+
+  build-linux:
+    name: Build Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libwayland-dev libxkbcommon-dev libx11-dev libxcursor-dev libxrandr-dev libxi-dev
+      - name: Setup Rust
+        uses: dtolnay/rust-action@stable
+      - name: Build
+        run: cargo build --release
+      - name: Package
+        run: |
+          mkdir -p output
+          zip -j output/whatsminer_chip_map_x86_64-unknown-linux-gnu.zip target/release/whatsminer_chip_map README.md
+          cd output && sha256sum whatsminer_chip_map_x86_64-unknown-linux-gnu.zip > whatsminer_chip_map_x86_64-unknown-linux-gnu.zip.sha256sum
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: whatsminer_chip_map-linux
           path: output/*.zip*
 
   release:
     name: Create Release
-    needs: build
+    needs: [build-windows, build-linux]
     runs-on: ubuntu-latest
     steps:
       - name: Download all artifacts
