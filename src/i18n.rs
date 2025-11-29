@@ -3,17 +3,24 @@
 use std::fmt;
 
 /// Supported languages
-/// Note: Persian/Chinese removed - RTL bug and missing font glyphs respectively
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub enum Language {
     #[default]
     English,
     Russian,
     Spanish,
+    Persian,
+    Chinese,
 }
 
 impl Language {
-    pub const ALL: &[Self] = &[Self::English, Self::Russian, Self::Spanish];
+    pub const ALL: &[Self] = &[
+        Self::English,
+        Self::Russian,
+        Self::Spanish,
+        Self::Persian,
+        Self::Chinese,
+    ];
 }
 
 impl fmt::Display for Language {
@@ -22,6 +29,8 @@ impl fmt::Display for Language {
             Self::English => "en",
             Self::Russian => "ru",
             Self::Spanish => "es",
+            Self::Persian => "fa",
+            Self::Chinese => "zh",
         })
     }
 }
@@ -37,6 +46,8 @@ impl Tr {
             Language::English => "WhatsMiner Chip Map",
             Language::Russian => "Карта чипов WhatsMiner",
             Language::Spanish => "Mapa de chips WhatsMiner",
+            Language::Persian => "نقشه چیپ WhatsMiner",
+            Language::Chinese => "WhatsMiner 芯片图",
         }
     }
 
@@ -46,6 +57,8 @@ impl Tr {
             Language::English => "Ready",
             Language::Russian => "Готово",
             Language::Spanish => "Listo",
+            Language::Persian => "آماده",
+            Language::Chinese => "就绪",
         }
     }
 
@@ -54,6 +67,8 @@ impl Tr {
             Language::English => "Connecting...",
             Language::Russian => "Подключение...",
             Language::Spanish => "Conectando...",
+            Language::Persian => "...در حال اتصال",
+            Language::Chinese => "连接中...",
         }
     }
 
@@ -61,6 +76,8 @@ impl Tr {
         match lang {
             Language::English | Language::Spanish => "Error",
             Language::Russian => "Ошибка",
+            Language::Persian => "خطا",
+            Language::Chinese => "错误",
         }
     }
 
@@ -74,6 +91,8 @@ impl Tr {
             Language::English => "User",
             Language::Russian => "Пользователь",
             Language::Spanish => "Usuario",
+            Language::Persian => "کاربر",
+            Language::Chinese => "用户",
         }
     }
 
@@ -82,6 +101,8 @@ impl Tr {
             Language::English => "Pass",
             Language::Russian => "Пароль",
             Language::Spanish => "Clave",
+            Language::Persian => "رمز",
+            Language::Chinese => "密码",
         }
     }
 
@@ -91,6 +112,8 @@ impl Tr {
             Language::English => "Fetch",
             Language::Russian => "Загрузить",
             Language::Spanish => "Obtener",
+            Language::Persian => "دریافت",
+            Language::Chinese => "获取",
         }
     }
 
@@ -99,6 +122,8 @@ impl Tr {
             Language::English => "Loading...",
             Language::Russian => "Загрузка...",
             Language::Spanish => "Cargando...",
+            Language::Persian => "...بارگذاری",
+            Language::Chinese => "加载中...",
         }
     }
 
@@ -107,6 +132,8 @@ impl Tr {
         match lang {
             Language::English | Language::Spanish => "Color:",
             Language::Russian => "Цвет:",
+            Language::Persian => ":رنگ",
+            Language::Chinese => "颜色:",
         }
     }
 
@@ -115,6 +142,8 @@ impl Tr {
             Language::English => "Lang:",
             Language::Russian => "Язык:",
             Language::Spanish => "Idioma:",
+            Language::Persian => ":زبان",
+            Language::Chinese => "语言:",
         }
     }
 
@@ -123,6 +152,8 @@ impl Tr {
             Language::English => "Click 'Fetch' to load miner data",
             Language::Russian => "Нажмите 'Загрузить' для получения данных",
             Language::Spanish => "Haga clic en 'Obtener' para cargar datos",
+            Language::Persian => "برای بارگذاری داده‌ها روی 'دریافت' کلیک کنید",
+            Language::Chinese => "点击'获取'加载矿机数据",
         }
     }
 
@@ -132,6 +163,8 @@ impl Tr {
             Language::English => "── System Info ──",
             Language::Russian => "── Информация ──",
             Language::Spanish => "── Info Sistema ──",
+            Language::Persian => "── اطلاعات سیستم ──",
+            Language::Chinese => "── 系统信息 ──",
         }
     }
 
@@ -139,6 +172,8 @@ impl Tr {
         match lang {
             Language::English | Language::Spanish => "FW",
             Language::Russian => "ПО",
+            Language::Persian => "FW",
+            Language::Chinese => "固件",
         }
     }
 
@@ -147,6 +182,8 @@ impl Tr {
             Language::English => "Slot",
             Language::Russian => "Слот",
             Language::Spanish => "Ranura",
+            Language::Persian => "اسلات",
+            Language::Chinese => "槽位",
         }
     }
 
@@ -154,6 +191,8 @@ impl Tr {
         match lang {
             Language::English | Language::Spanish => "chips",
             Language::Russian => "чипов",
+            Language::Persian => "چیپ",
+            Language::Chinese => "芯片",
         }
     }
 
@@ -162,6 +201,8 @@ impl Tr {
             Language::English => "slots",
             Language::Russian => "слотов",
             Language::Spanish => "ranuras",
+            Language::Persian => "اسلات",
+            Language::Chinese => "槽位",
         }
     }
 
@@ -171,6 +212,8 @@ impl Tr {
             Language::English => "Temperature",
             Language::Russian => "Температура",
             Language::Spanish => "Temperatura",
+            Language::Persian => "دما",
+            Language::Chinese => "温度",
         }
     }
 
@@ -179,6 +222,8 @@ impl Tr {
             Language::English => "Errors",
             Language::Russian => "Ошибки",
             Language::Spanish => "Errores",
+            Language::Persian => "خطاها",
+            Language::Chinese => "错误",
         }
     }
 
@@ -191,6 +236,8 @@ impl Tr {
             Language::English => "Gradient",
             Language::Russian => "Градиент",
             Language::Spanish => "Gradiente",
+            Language::Persian => "گرادیان",
+            Language::Chinese => "梯度",
         }
     }
 
@@ -199,6 +246,8 @@ impl Tr {
             Language::English => "Outliers",
             Language::Russian => "Выбросы",
             Language::Spanish => "Atípicos",
+            Language::Persian => "پرت‌ها",
+            Language::Chinese => "异常值",
         }
     }
 
@@ -206,6 +255,8 @@ impl Tr {
         match lang {
             Language::English | Language::Spanish => "Nonce",
             Language::Russian => "Нонс",
+            Language::Persian => "نانس",
+            Language::Chinese => "随机数",
         }
     }
 }
