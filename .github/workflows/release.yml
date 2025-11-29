@@ -30,7 +30,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: whatsminer_chip_map-${{ matrix.target }}
-          path: output/*
+          path: output/*.zip*
 
   release:
     name: Create Release
