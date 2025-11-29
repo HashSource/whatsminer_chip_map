@@ -7,10 +7,20 @@ pub enum ColorMode {
     Temperature,
     Errors,
     Crc,
+    /// Laplacian gradient: highlights chips with rapid temp change vs neighbors
+    Gradient,
+    /// Statistical outliers: chips N std devs from local mean
+    Outliers,
 }
 
 impl ColorMode {
-    pub const ALL: &[Self] = &[Self::Temperature, Self::Errors, Self::Crc];
+    pub const ALL: &[Self] = &[
+        Self::Temperature,
+        Self::Errors,
+        Self::Crc,
+        Self::Gradient,
+        Self::Outliers,
+    ];
 }
 
 impl fmt::Display for ColorMode {
@@ -19,6 +29,8 @@ impl fmt::Display for ColorMode {
             Self::Temperature => "Temperature",
             Self::Errors => "Errors",
             Self::Crc => "CRC",
+            Self::Gradient => "Gradient",
+            Self::Outliers => "Outliers",
         })
     }
 }

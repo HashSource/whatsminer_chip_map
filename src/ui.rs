@@ -7,7 +7,8 @@ use iced::{
 };
 
 use crate::Message;
-use crate::config::{self, MinerConfig};
+use crate::analysis::{self, ChipAnalysis};
+use crate::config;
 use crate::models::{Chip, ColorMode, MinerData, Slot, SystemInfo};
 use crate::theme;
 
@@ -26,9 +27,24 @@ pub fn miner_view<'a>(
     // Look up miner config based on model name for physical layout
     let miner_config = system_info.and_then(|info| config::lookup(&info.model));
 
-    let grids = data.slots.iter().fold(
+    // Determine chips_per_domain (consistent across all slots for cross-slot comparison)
+    let chips_per_domain = miner_config
+        .map(|cfg| cfg.chips_per_domain as usize)
+        .unwrap_or_else(|| {
+            data.slots
+                .first()
+                .map(|s| infer_chips_per_domain(s.chips.len()))
+                .unwrap_or(3)
+        });
+
+    // Compute cross-slot analysis for gradient/outlier modes
+    let all_analysis = analysis::analyze_all_slots(&data.slots, chips_per_domain);
+
+    let grids = data.slots.iter().zip(all_analysis.iter()).fold(
         Column::new().spacing(25).width(Length::Shrink),
-        |col, slot| col.push(slot_grid(slot, color_mode, miner_config)),
+        |col, (slot, slot_analysis)| {
+            col.push(slot_grid(slot, color_mode, chips_per_domain, slot_analysis))
+        },
     );
 
     let divider = mouse_area(
@@ -135,13 +151,9 @@ fn infer_chips_per_domain(chip_count: usize) -> usize {
 fn slot_grid<'a>(
     slot: &'a Slot,
     color_mode: ColorMode,
-    miner_config: Option<&'static MinerConfig>,
+    chips_per_domain: usize,
+    analysis: &[ChipAnalysis],
 ) -> Element<'a, Message> {
-    // Determine chips per domain based on config or infer from chip count
-    let chips_per_domain = miner_config
-        .map(|cfg| cfg.chips_per_domain as usize)
-        .unwrap_or_else(|| infer_chips_per_domain(slot.chips.len()));
-
     // Calculate domains (columns) for this slot
     let domains = if chips_per_domain > 0 {
         slot.chips.len().div_ceil(chips_per_domain)
@@ -171,18 +183,25 @@ fn slot_grid<'a>(
     ]
     .spacing(20);
 
-    container(column![header, chip_grid(&slot.chips, color_mode, chips_per_domain)].spacing(10))
-        .padding(15)
-        .width(Length::Shrink)
-        .style(|_| theme::slot_container())
-        .into()
+    container(
+        column![
+            header,
+            chip_grid(&slot.chips, color_mode, chips_per_domain, analysis)
+        ]
+        .spacing(10),
+    )
+    .padding(15)
+    .width(Length::Shrink)
+    .style(|_| theme::slot_container())
+    .into()
 }
 
-fn chip_grid(
-    chips: &[Chip],
+fn chip_grid<'a>(
+    chips: &'a [Chip],
     color_mode: ColorMode,
     chips_per_domain: usize,
-) -> Column<'_, Message> {
+    analysis: &[ChipAnalysis],
+) -> Column<'a, Message> {
     // Physical layout: chips are arranged in domains (vertical stacks)
     // Board is split into 2 sections with snake pattern
     let num_domains = if chips_per_domain > 0 {
@@ -212,6 +231,7 @@ fn chip_grid(
             bottom_domains,
             num_domains,
             false, // left to right: continues from left after snake
+            analysis,
         );
         grid = grid.push(top_section);
     }
@@ -225,6 +245,7 @@ fn chip_grid(
         0,
         bottom_domains,
         true, // reversed: D0 on right
+        analysis,
     );
     grid = grid.push(bottom_section);
 
@@ -232,14 +253,15 @@ fn chip_grid(
 }
 
 /// Render a section of domains as rows of chips
-fn render_section(
-    chips: &[Chip],
+fn render_section<'a>(
+    chips: &'a [Chip],
     color_mode: ColorMode,
     chips_per_domain: usize,
     start_domain: usize,
     end_domain: usize,
     reversed: bool,
-) -> Column<'_, Message> {
+    analysis: &[ChipAnalysis],
+) -> Column<'a, Message> {
     let domain_count = end_domain - start_domain;
     let mut section = Column::new().spacing(CHIP_SPACING).width(Length::Shrink);
 
@@ -254,7 +276,8 @@ fn render_section(
             };
             let chip_idx = domain_idx * chips_per_domain + row_idx;
             if chip_idx < chips.len() {
-                r = r.push(chip_cell(&chips[chip_idx], color_mode));
+                let chip_analysis = analysis.get(chip_idx).copied();
+                r = r.push(chip_cell(&chips[chip_idx], color_mode, chip_analysis));
             } else {
                 r = r.push(Space::new(CHIP_SIZE, CHIP_SIZE));
             }
@@ -265,7 +288,11 @@ fn render_section(
     section
 }
 
-fn chip_cell(chip: &Chip, color_mode: ColorMode) -> Element<'_, Message> {
+fn chip_cell(
+    chip: &Chip,
+    color_mode: ColorMode,
+    analysis: Option<ChipAnalysis>,
+) -> Element<'_, Message> {
     let Chip {
         id,
         freq,
@@ -298,7 +325,7 @@ fn chip_cell(chip: &Chip, color_mode: ColorMode) -> Element<'_, Message> {
         .padding(2)
         .center_x(Length::Fixed(CHIP_SIZE))
         .center_y(Length::Fixed(CHIP_SIZE))
-        .style(move |_| theme::chip_cell(temp, errors, crc, color_mode));
+        .style(move |_| theme::chip_cell(temp, errors, crc, color_mode, analysis));
 
     tooltip(cell, text(format!("C{id}")).size(12), Position::Top)
         .gap(5)

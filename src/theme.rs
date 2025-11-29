@@ -1,5 +1,6 @@
 use iced::{Background, Border, Color, color, widget::container};
 
+use crate::analysis::ChipAnalysis;
 use crate::models::ColorMode;
 
 // Brand colors
@@ -15,6 +16,8 @@ const BORDER_ACCENT: Color = color!(0x4A, 0x4A, 0x4A);
 const TEMP_RANGE: (f32, f32) = (40.0, 100.0);
 const ERROR_RANGE: (f32, f32) = (0.0, 150.0);
 const CRC_RANGE: (f32, f32) = (0.0, 15.0);
+const LAPLACIAN_RANGE: (f32, f32) = (0.0, 15.0); // Degrees difference from neighbors
+const ZSCORE_RANGE: (f32, f32) = (0.0, 3.0); // Standard deviations
 
 // Board temperature range for sidebar
 const BOARD_TEMP_RANGE: (f32, f32) = (30.0, 90.0);
@@ -99,11 +102,25 @@ pub fn color_for_board_temp(temp: f64) -> Color {
 
 /// Chip cell style with gradient coloring based on mode
 #[allow(clippy::cast_precision_loss)] // small integer values fit in f32
-pub fn chip_cell(temp: i32, errors: i32, crc: i32, mode: ColorMode) -> container::Style {
+pub fn chip_cell(
+    temp: i32,
+    errors: i32,
+    crc: i32,
+    mode: ColorMode,
+    analysis: Option<ChipAnalysis>,
+) -> container::Style {
     let t = match mode {
         ColorMode::Temperature => normalize(temp as f32, TEMP_RANGE.0, TEMP_RANGE.1),
         ColorMode::Errors => normalize(errors as f32, ERROR_RANGE.0, ERROR_RANGE.1),
         ColorMode::Crc => normalize(crc as f32, CRC_RANGE.0, CRC_RANGE.1),
+        ColorMode::Gradient => {
+            let gradient = analysis.map_or(0.0, |a| a.gradient);
+            normalize(gradient, LAPLACIAN_RANGE.0, LAPLACIAN_RANGE.1)
+        }
+        ColorMode::Outliers => {
+            let zscore = analysis.map_or(0.0, |a| a.cross_slot_zscore);
+            normalize(zscore, ZSCORE_RANGE.0, ZSCORE_RANGE.1)
+        }
     };
     let (bg, border) = gradient_colors(t);
 
