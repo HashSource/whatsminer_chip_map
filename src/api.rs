@@ -2,7 +2,7 @@ use std::time::Duration;
 
 use reqwest::Client;
 
-use crate::models::{Chip, MinerData, Slot};
+use crate::models::{Chip, MinerData, Slot, SystemInfo};
 
 const TIMEOUT_SECS: u64 = 30;
 
@@ -39,6 +39,57 @@ pub async fn fetch(ip: &str, user: &str, pass: &str) -> Result<MinerData, String
 
     let html = resp.text().await.map_err(|e| e.to_string())?;
     parse_html(&html)
+}
+
+pub async fn fetch_system_info(ip: &str, user: &str, pass: &str) -> Result<SystemInfo, String> {
+    let client = Client::builder()
+        .danger_accept_invalid_certs(true)
+        .cookie_store(true)
+        .timeout(Duration::from_secs(TIMEOUT_SECS))
+        .build()
+        .map_err(|e| e.to_string())?;
+
+    // Authenticate
+    let resp = client
+        .post(format!("https://{ip}/cgi-bin/luci"))
+        .form(&[("luci_username", user), ("luci_password", pass)])
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    if !resp.status().is_success() && !resp.status().is_redirection() {
+        return Err(format!("Login failed: {}", resp.status()));
+    }
+
+    // Fetch overview page
+    let resp = client
+        .get(format!("https://{ip}/cgi-bin/luci/admin/status/overview"))
+        .send()
+        .await
+        .map_err(|e| e.to_string())?;
+
+    if !resp.status().is_success() {
+        return Err(format!("Overview fetch failed: {}", resp.status()));
+    }
+
+    let html = resp.text().await.map_err(|e| e.to_string())?;
+    Ok(parse_overview_html(&html))
+}
+
+fn parse_overview_html(html: &str) -> SystemInfo {
+    SystemInfo {
+        model: extract_table_value(html, "Model").unwrap_or_default(),
+        hardware_info: extract_table_value(html, "Hardware Info").unwrap_or_default(),
+        firmware_version: extract_table_value(html, "Firmware Version").unwrap_or_default(),
+    }
+}
+
+fn extract_table_value(html: &str, label: &str) -> Option<String> {
+    // Find pattern: <td ...>Label</td><td>VALUE</td>
+    let pattern = format!(">{label}</td><td>");
+    let start = html.find(&pattern)? + pattern.len();
+    let end = start + html[start..].find("</td>")?;
+    Some(html[start..end].to_string())
 }
 
 fn parse_html(html: &str) -> Result<MinerData, String> {

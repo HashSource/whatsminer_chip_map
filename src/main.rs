@@ -8,7 +8,7 @@ use iced::{
     widget::{button, column, container, pick_list, row, text, text_input},
 };
 
-use models::{ColorMode, MinerData};
+use models::{ColorMode, MinerData, SystemInfo};
 
 fn main() -> iced::Result {
     iced::application("WhatsMiner Chip Map", App::update, App::view)
@@ -23,6 +23,7 @@ pub enum Message {
     PassChanged(String),
     Fetch,
     Fetched(Result<MinerData, String>),
+    SystemInfoFetched(Result<SystemInfo, String>),
     DividerDragStart,
     DividerDragEnd,
     DividerDrag(f32),
@@ -36,6 +37,7 @@ struct App {
     pass: String,
     status: String,
     data: Option<MinerData>,
+    system_info: Option<SystemInfo>,
     loading: bool,
     sidebar_width: f32,
     dragging: bool,
@@ -66,10 +68,17 @@ impl App {
                 self.loading = true;
                 self.status = "Connecting...".into();
                 let (ip, user, pass) = (self.ip.clone(), self.user.clone(), self.pass.clone());
-                return Task::perform(
-                    async move { api::fetch(&ip, &user, &pass).await },
-                    Message::Fetched,
-                );
+                let (ip2, user2, pass2) = (ip.clone(), user.clone(), pass.clone());
+                return Task::batch([
+                    Task::perform(
+                        async move { api::fetch(&ip, &user, &pass).await },
+                        Message::Fetched,
+                    ),
+                    Task::perform(
+                        async move { api::fetch_system_info(&ip2, &user2, &pass2).await },
+                        Message::SystemInfoFetched,
+                    ),
+                ]);
             }
             Message::Fetched(Ok(data)) => {
                 self.loading = false;
@@ -80,6 +89,12 @@ impl App {
                 self.loading = false;
                 self.status = format!("Error: {e}");
                 self.data = None;
+            }
+            Message::SystemInfoFetched(Ok(info)) => {
+                self.system_info = Some(info);
+            }
+            Message::SystemInfoFetched(Err(_)) => {
+                self.system_info = None;
             }
             Message::DividerDragStart => self.dragging = true,
             Message::DividerDragEnd => self.dragging = false,
@@ -130,7 +145,13 @@ impl App {
             .width(Length::Fill);
 
         let content = match &self.data {
-            Some(data) => ui::miner_view(data, self.sidebar_width, self.dragging, self.color_mode),
+            Some(data) => ui::miner_view(
+                data,
+                self.system_info.as_ref(),
+                self.sidebar_width,
+                self.dragging,
+                self.color_mode,
+            ),
             None => container(text("Click 'Fetch' to load miner data").size(16))
                 .padding(20)
                 .width(Length::Fill)

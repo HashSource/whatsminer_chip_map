@@ -23,6 +23,14 @@ impl fmt::Display for ColorMode {
     }
 }
 
+/// System information from the miner's overview page
+#[derive(Debug, Clone, Default)]
+pub struct SystemInfo {
+    pub model: String,
+    pub hardware_info: String,
+    pub firmware_version: String,
+}
+
 #[derive(Debug, Clone, Default)]
 pub struct MinerData {
     pub slots: Vec<Slot>,

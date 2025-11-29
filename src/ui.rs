@@ -4,20 +4,21 @@ use iced::{
 };
 
 use crate::Message;
-use crate::models::{Chip, ColorMode, MinerData, Slot};
+use crate::models::{Chip, ColorMode, MinerData, Slot, SystemInfo};
 use crate::theme;
 
 const CHIPS_PER_ROW: usize = 16;
 const CHIP_SIZE: (f32, f32) = (85.0, 65.0);
 const CHIP_SPACING: u16 = 3;
 
-pub fn miner_view(
-    data: &MinerData,
+pub fn miner_view<'a>(
+    data: &'a MinerData,
+    system_info: Option<&'a SystemInfo>,
     sidebar_width: f32,
     dragging: bool,
     color_mode: ColorMode,
-) -> Element<'_, Message> {
-    let sidebar = sidebar(data);
+) -> Element<'a, Message> {
+    let sidebar = sidebar(data, system_info);
 
     let grids = data.slots.iter().fold(
         Column::new().spacing(25).width(Length::Shrink),
@@ -63,8 +64,22 @@ pub fn miner_view(
     }
 }
 
-fn sidebar(data: &MinerData) -> Column<'_, Message> {
+fn sidebar<'a>(data: &'a MinerData, system_info: Option<&'a SystemInfo>) -> Column<'a, Message> {
     let mut col = Column::new().spacing(2).padding(5).width(Length::Fill);
+
+    // System info section
+    if let Some(info) = system_info {
+        col = col
+            .push(
+                text("── System Info ──")
+                    .size(13)
+                    .color(theme::BRAND_ORANGE),
+            )
+            .push(text(&info.model).size(12))
+            .push(text(&info.hardware_info).size(11))
+            .push(text(format!("FW: {}", info.firmware_version)).size(11))
+            .push(text("").size(8)); // spacer
+    }
 
     for slot in &data.slots {
         col = col.push(

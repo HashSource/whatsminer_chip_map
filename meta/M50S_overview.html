@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>WhatsMiner_057c - Overview - LuCI</title>
+		<!--[if lt IE 9]><script src="/luci-static/bootstrap/html5.js?v=git-16.336.70424-1fd43b4"></script><![endif]-->
+		<meta name="viewport" content="initial-scale=1.0">
+		<link rel="stylesheet" href="/luci-static/bootstrap/cascade.css?v=git-16.336.70424-1fd43b4">
+		<link rel="stylesheet" media="only screen and (max-device-width: 854px)" href="/luci-static/bootstrap/mobile.css?v=git-16.336.70424-1fd43b4" type="text/css" />
+		<link rel="shortcut icon" href="/luci-static/bootstrap/favicon.ico">
+		<script src="/luci-static/resources/xhr.js?v=git-16.336.70424-1fd43b4"></script>
+	</head>
+
+	<body class="lang_enOverview">
+		<header>
+			<div class="fill">
+				<div class="container">
+					<a class="brand" href="#">WhatsMiner_057c</a>
+					<ul class="nav"><li class="dropdown"><a class="menu" href="#">Status</a><ul class="dropdown-menu"><li><a href="/cgi-bin/luci/admin/status/btminerstatus">Miner Status</a></li><li><a href="/cgi-bin/luci/admin/status/btminerapi">Miner API Log</a></li><li><a href="/cgi-bin/luci/admin/status/syslog">System Log</a></li><li><a href="/cgi-bin/luci/admin/status/minerlog">Miner Log</a></li><li><a href="/cgi-bin/luci/admin/status/processes">Processes</a></li><li><a href="/cgi-bin/luci/admin/status/overview">Overview</a></li></ul></li><li class="dropdown"><a class="menu" href="#">System</a><ul class="dropdown-menu"><li><a href="/cgi-bin/luci/admin/system/system">System</a></li><li><a href="/cgi-bin/luci/admin/system/admin">Administration</a></li><li><a href="/cgi-bin/luci/admin/system/reboot">Reboot</a></li></ul></li><li class="dropdown"><a class="menu" href="#">Configuration</a><ul class="dropdown-menu"><li><a href="/cgi-bin/luci/admin/network/network">Interfaces</a></li><li><a href="/cgi-bin/luci/admin/network/btminer">Miner Configuration</a></li></ul></li><li><a href="/cgi-bin/luci/admin/logout">Logout</a></li></ul>
+					<div class="pull-right">
+
+						<span id="xhr_poll_status" style="display:none" onclick="XHR.running() ? XHR.halt() : XHR.run()">
+							<span class="label success" id="xhr_poll_status_on">Auto Refresh on</span>
+							<span class="label" id="xhr_poll_status_off" style="display:none">Auto Refresh off</span>
+						</span>
+					</div>
+				</div>
+			</div>
+		</header><div id="maincontent" class="container">
+
+
+
+
+<script type="text/javascript" src="/luci-static/resources/cbi.js?v=git-16.336.70424-1fd43b4"></script>
+<script type="text/javascript">//<![CDATA[
+        function progressbar(v, m)
+        {
+                var vn = parseInt(v) || 0;
+                var mn = parseInt(m) || 100;
+                var pc = Math.floor((100 / mn) * vn);
+
+                return String.format(
+                        '<div style="width:200px; position:relative; border:1px solid #999999">' +
+                                '<div style="background-color:#CCCCCC; width:%d%%; height:15px">' +
+                                        '<div style="position:absolute; left:0; top:0; text-align:center; width:100%%; color:#000000">' +
+                                                '<small>%s / %s (%d%%)</small>' +
+                                        '</div>' +
+                                '</div>' +
+                        '</div>', pc, v, m, pc
+                );
+        }
+
+        function wifirate(bss, rx) {
+                var p = rx ? 'rx_' : 'tx_',
+                    s = '%.1f Mbit/s, %dMHz'
+                                        .format(bss[p+'rate'] / 1000, bss[p+'mhz']),
+                    ht = bss[p+'ht'], vht = bss[p+'vht'],
+                        mhz = bss[p+'mhz'], nss = bss[p+'nss'],
+                        mcs = bss[p+'mcs'], sgi = bss[p+'short_gi'];
+
+                if (ht || vht) {
+                        if (vht) s += ', VHT-MCS %d'.format(mcs);
+                        if (nss) s += ', VHT-NSS %d'.format(nss);
+                        if (ht)  s += ', MCS %s'.format(mcs);
+                        if (sgi) s += ', Short GI';
+                }
+
+                return s;
+        }
+
+        function duid2mac(duid) {
+                // DUID-LLT / Ethernet
+                if (duid.length === 28 && duid.substr(0, 8) === '00010001')
+                        return duid.substr(16).replace(/(..)(?=..)/g, '$1:').toUpperCase();
+
+                // DUID-LL / Ethernet
+                if (duid.length === 24 && duid.substr(0, 8) === '00030001')
+                        return duid.substr(8).replace(/(..)(?=..)/g, '$1:').toUpperCase();
+
+                return null;
+        }
+
+        var npoll = 1;
+        var hosts = {"28:70:4E:47:60:CF":{"ipv4":"192.7.1.254"},"CC:07:18:00:05:7C":{"ipv4":"192.7.1.193"}};
+
+        function updateHosts() {
+                XHR.get('/cgi-bin/luci/admin/status/overview', { hosts: 1 }, function(x, data) {
+                        hosts = data;
+                });
+        }
+
+        XHR.poll(5, '/cgi-bin/luci/admin/status/overview', { status: 1 },
+                function(x, info)
+                {
+                        if (!(npoll++ % 5))
+                                updateHosts();
+
+                        var si = document.getElementById('wan4_i');
+                        var ss = document.getElementById('wan4_s');
+                        var ifc = info.wan;
+
+                        if (ifc && ifc.ifname && ifc.proto != 'none')
+                        {
+                                var s = String.format(
+                                        '<strong>Type: </strong>%s<br />' +
+                                        '<strong>Address: </strong>%s<br />' +
+                                        '<strong>Netmask: </strong>%s<br />' +
+                                        '<strong>Gateway: </strong>%s<br />',
+                                                ifc.proto,
+                                                (ifc.ipaddr) ? ifc.ipaddr : '0.0.0.0',
+                                                (ifc.netmask && ifc.netmask != ifc.ipaddr) ? ifc.netmask : '255.255.255.255',
+                                                (ifc.gwaddr) ? ifc.gwaddr : '0.0.0.0'
+                                );
+
+                                for (var i = 0; i < ifc.dns.length; i++)
+                                {
+                                        s += String.format(
+                                                '<strong>DNS %d: </strong>%s<br />',
+                                                i + 1, ifc.dns[i]
+                                        );
+                                }
+
+                                if (ifc.expires > -1)
+                                {
+                                        s += String.format(
+                                                '<strong>Expires: </strong>%t<br />',
+                                                ifc.expires
+                                        );
+                                }
+
+                                if (ifc.uptime > 0)
+                                {
+                                        s += String.format(
+                                                '<strong>Connected: </strong>%t<br />',
+                                                ifc.uptime
+                                        );
+                                }
+
+                                ss.innerHTML = String.format('<small>%s</small>', s);
+                                si.innerHTML = String.format(
+                                        '<img src="/luci-static/resources/icons/ethernet.png" />' +
+                                        '<br /><small><a href="%s">%s</a></small>',
+                                                ifc.link, ifc.ifname
+                                );
+                        }
+                        else
+                        {
+                                si.innerHTML = '<img src="/luci-static/resources/icons/ethernet_disabled.png" /><br /><small>?</small>';
+                                ss.innerHTML = '<em>Not connected</em>';
+                        }
+
+
+
+
+
+
+
+
+
+                        var e;
+
+                        if (e = document.getElementById('localtime'))
+                                e.innerHTML = info.localtime;
+
+                        if (e = document.getElementById('uptime'))
+                                e.innerHTML = String.format('%t', info.uptime);
+
+                        if (e = document.getElementById('loadavg'))
+                                e.innerHTML = String.format(
+                                        '%.02f, %.02f, %.02f',
+                                        info.loadavg[0] / 65535.0,
+                                        info.loadavg[1] / 65535.0,
+                                        info.loadavg[2] / 65535.0
+                                );
+
+                        if (e = document.getElementById('memtotal'))
+                                e.innerHTML = progressbar(
+                                        ((info.memory.free + info.memory.buffered) / 1024) + " kB",
+                                        (info.memory.total / 1024) + " kB"
+                                );
+
+                        if (e = document.getElementById('memfree'))
+                                e.innerHTML = progressbar(
+                                        (info.memory.free / 1024) + " kB",
+                                        (info.memory.total / 1024) + " kB"
+                                );
+
+                        if (e = document.getElementById('membuff'))
+                                e.innerHTML = progressbar(
+                                        (info.memory.buffered / 1024) + " kB",
+                                        (info.memory.total / 1024) + " kB"
+                                );
+
+                        if (e = document.getElementById('swaptotal'))
+                                e.innerHTML = progressbar(
+                                        (info.swap.free / 1024) + " kB",
+                                        (info.swap.total / 1024) + " kB"
+                                );
+
+                        if (e = document.getElementById('swapfree'))
+                                e.innerHTML = progressbar(
+                                        (info.swap.free / 1024) + " kB",
+                                        (info.swap.total / 1024) + " kB"
+                                );
+
+                        if (e = document.getElementById('conns'))
+                                e.innerHTML = progressbar(info.conncount, info.connmax);
+
+                }
+        );
+//]]></script>
+
+<h2 name="content">Status</h2>
+
+<fieldset class="cbi-section">
+        <legend>System</legend>
+
+        <table width="100%" cellspacing="10">
+                <tr><td width="33%">Model</td><td>WhatsMiner M50S_VH55</td></tr>
+        <tr><td width="33%">Hardware Info</td><td>M50S_VH55.H616-CB6V10.P222B-VE2-196803B</td></tr>
+                <tr><td width="33%">Firmware Version</td><td>20251016.14.Rel2</td></tr>
+                <tr><td width="33%">Kernel Version</td><td>#1525 SMP PREEMPT Thu Oct 16 14:13:50 CST 2025</td></tr>
+                <tr><td width="33%">Local Time</td><td id="localtime">-</td></tr>
+                <tr><td width="33%">Uptime</td><td id="uptime">-</td></tr>
+                <tr><td width="33%">Load Average</td><td id="loadavg">-</td></tr>
+        </table>
+</fieldset>
+
+<fieldset class="cbi-section">
+        <legend>Memory</legend>
+
+        <table width="100%" cellspacing="10">
+                <tr><td width="33%">Total Available</td><td id="memtotal">-</td></tr>
+                <tr><td width="33%">Free</td><td id="memfree">-</td></tr>
+                <tr><td width="33%">Buffered</td><td id="membuff">-</td></tr>
+        </table>
+</fieldset>
+
+
+
+<fieldset class="cbi-section">
+        <legend>Network</legend>
+
+        <table width="100%" cellspacing="10">
+                <tr><td width="33%" style="vertical-align:top">IPv4 WAN Status</td><td>
+                        <table><tr>
+                                <td id="wan4_i" style="width:16px; text-align:center; padding:3px"><img src="/luci-static/resources/icons/ethernet_disabled.png" /><br /><small>?</small></td>
+                                <td id="wan4_s" style="vertical-align:middle; padding: 3px"><em>Collecting data...</em></td>
+                        </tr></table>
+                </td></tr>
+
+                <tr><td width="33%">Active Connections</td><td id="conns">-</td></tr>
+        </table>
+</fieldset>
+
+
+
+
+
+
+   <footer>
+    <a>Copyright (C) 2020 Microbt.com. All Rights Reserved.</a>
+   </footer>
+   </div>
+  </div>
+ </body>
+</html>
