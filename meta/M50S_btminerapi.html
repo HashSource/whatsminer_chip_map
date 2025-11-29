@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>WhatsMiner_0247 - Miner API Log - LuCI</title>
+		<!--[if lt IE 9]><script src="/luci-static/bootstrap/html5.js?v=git-16.336.70424-1fd43b4"></script><![endif]-->
+		<meta name="viewport" content="initial-scale=1.0">
+		<link rel="stylesheet" href="/luci-static/bootstrap/cascade.css?v=git-16.336.70424-1fd43b4">
+		<link rel="stylesheet" media="only screen and (max-device-width: 854px)" href="/luci-static/bootstrap/mobile.css?v=git-16.336.70424-1fd43b4" type="text/css" />
+		<link rel="shortcut icon" href="/luci-static/bootstrap/favicon.ico">
+		<script src="/luci-static/resources/xhr.js?v=git-16.336.70424-1fd43b4"></script>
+	</head>
+
+	<body class="lang_enMiner API Log">
+		<header>
+			<div class="fill">
+				<div class="container">
+					<a class="brand" href="#">WhatsMiner_0247</a>
+					<ul class="nav"><li class="dropdown"><a class="menu" href="#">Status</a><ul class="dropdown-menu"><li><a href="/cgi-bin/luci/admin/status/btminerstatus">Miner Status</a></li><li><a href="/cgi-bin/luci/admin/status/btminerapi">Miner API Log</a></li><li><a href="/cgi-bin/luci/admin/status/syslog">System Log</a></li><li><a href="/cgi-bin/luci/admin/status/minerlog">Miner Log</a></li><li><a href="/cgi-bin/luci/admin/status/processes">Processes</a></li><li><a href="/cgi-bin/luci/admin/status/overview">Overview</a></li></ul></li><li class="dropdown"><a class="menu" href="#">System</a><ul class="dropdown-menu"><li><a href="/cgi-bin/luci/admin/system/system">System</a></li><li><a href="/cgi-bin/luci/admin/system/admin">Administration</a></li><li><a href="/cgi-bin/luci/admin/system/reboot">Reboot</a></li></ul></li><li class="dropdown"><a class="menu" href="#">Configuration</a><ul class="dropdown-menu"><li><a href="/cgi-bin/luci/admin/network/network">Interfaces</a></li><li><a href="/cgi-bin/luci/admin/network/btminer">Miner Configuration</a></li></ul></li><li><a href="/cgi-bin/luci/admin/logout">Logout</a></li></ul>
+					<div class="pull-right">
+
+						<span id="xhr_poll_status" style="display:none" onclick="XHR.running() ? XHR.halt() : XHR.run()">
+							<span class="label success" id="xhr_poll_status_on">Auto Refresh on</span>
+							<span class="label" id="xhr_poll_status_off" style="display:none">Auto Refresh off</span>
+						</span>
+					</div>
+				</div>
+			</div>
+		</header><div id="maincontent" class="container">
+
+
+
+<h2><a id="content" name="content">Miner API Log</a> </h2>
+<div id="content_api">
+<textarea readonly="readonly" wrap="on" rows="416" id="syslog">slot: 0, freq: 566, temp: 71.8, step: 20
+diff: 3, interval: 672/810/680, delay: 0.0000/0.0000%%
+nonce valid: 537505389(2711/s), before: 2338259, submit: 0.0, err: 8212, crc: 0, repeat: 288
+C0   freq:593  vol:330 temp:48  nonce:3640547  err:49   crc:0    x:0   / 0 repeat:0    pct: 54.5%/ 52.5%
+C1   freq:573  vol:330 temp:48  nonce:3748910  err:60   crc:0    x:0   / 0 repeat:0    pct: 73.3%/ 70.0%
+C2   freq:566  vol:329 temp:48  nonce:3832589  err:55   crc:0    x:0   / 0 repeat:1    pct: 83.1%/ 76.7%
+C3   freq:567  vol:333 temp:48  nonce:3946907  err:65   crc:0    x:0   / 0 repeat:4    pct: 90.1%/ 90.9%
+C4   freq:578  vol:337 temp:49  nonce:4027823  err:54   crc:0    x:0   / 0 repeat:2    pct: 90.8%/ 92.8%
+C5   freq:574  vol:338 temp:50  nonce:4019387  err:61   crc:0    x:0   / 0 repeat:1    pct: 93.5%/ 93.9%
+C6   freq:588  vol:329 temp:52  nonce:3994007  err:65   crc:0    x:0   / 0 repeat:0    pct: 83.4%/ 84.6%
+C7   freq:571  vol:330 temp:51  nonce:3813360  err:66   crc:0    x:0   / 0 repeat:2    pct: 78.3%/ 74.3%
+C8   freq:571  vol:328 temp:49  nonce:3763768  err:61   crc:0    x:0   / 0 repeat:3    pct: 75.8%/ 74.3%
+C9   freq:553  vol:329 temp:52  nonce:3911533  err:75   crc:0    x:0   / 0 repeat:2    pct: 96.8%/ 99.6%
+C10  freq:564  vol:332 temp:53  nonce:3990130  err:75   crc:0    x:0   / 0 repeat:1    pct: 96.4%/ 99.7%
+C11  freq:587  vol:328 temp:54  nonce:4152086  err:54   crc:0    x:0   / 0 repeat:1    pct: 97.1%/ 94.0%
+C12  freq:576  vol:330 temp:54  nonce:4006125  err:51   crc:0    x:0   / 0 repeat:4    pct: 93.4%/ 93.6%
+C13  freq:579  vol:329 temp:55  nonce:3997439  err:66   crc:0    x:0   / 0 repeat:3    pct: 90.3%/ 86.8%
+C14  freq:566  vol:329 temp:54  nonce:3926110  err:78   crc:0    x:0   / 0 repeat:2    pct: 88.5%/ 83.3%
+C15  freq:565  vol:329 temp:56  nonce:3886252  err:59   crc:0    x:0   / 0 repeat:2    pct: 90.5%/ 90.9%
+C16  freq:578  vol:330 temp:57  nonce:4008488  err:63   crc:0    x:0   / 0 repeat:1    pct: 94.4%/ 98.7%
+C17  freq:574  vol:331 temp:56  nonce:4037208  err:57   crc:0    x:0   / 0 repeat:2    pct: 96.0%/101.1%
+C18  freq:577  vol:323 temp:59  nonce:4060467  err:64   crc:0    x:0   / 0 repeat:3    pct: 98.1%/100.9%
+C19  freq:565  vol:323 temp:60  nonce:3986693  err:48   crc:0    x:0   / 0 repeat:0    pct: 97.0%/ 97.5%
+C20  freq:567  vol:323 temp:58  nonce:4019977  err:71   crc:0    x:0   / 0 repeat:2    pct: 99.5%/102.8%
+C21  freq:568  vol:326 temp:60  nonce:4003238  err:66   crc:0    x:0   / 0 repeat:0    pct: 98.0%/ 99.9%
+C22  freq:561  vol:329 temp:62  nonce:3980522  err:69   crc:0    x:0   / 0 repeat:2    pct: 98.1%/ 92.1%
+C23  freq:574  vol:328 temp:62  nonce:4053920  err:54   crc:0    x:0   / 0 repeat:1    pct: 97.2%/ 99.0%
+C24  freq:595  vol:321 temp:64  nonce:4195120  err:62   crc:0    x:0   / 0 repeat:2    pct: 98.6%/100.9%
+C25  freq:563  vol:322 temp:64  nonce:3998301  err:63   crc:0    x:0   / 0 repeat:2    pct: 98.2%/ 98.2%
+C26  freq:559  vol:321 temp:62  nonce:3964697  err:59   crc:0    x:0   / 0 repeat:1    pct: 99.8%/ 94.1%
+C27  freq:567  vol:319 temp:66  nonce:4031518  err:63   crc:0    x:0   / 0 repeat:2    pct: 98.6%/ 97.8%
+C28  freq:564  vol:322 temp:66  nonce:4009214  err:68   crc:0    x:0   / 0 repeat:3    pct: 98.5%/ 98.5%
+C29  freq:575  vol:321 temp:66  nonce:4081470  err:67   crc:0    x:0   / 0 repeat:1    pct: 98.7%/100.5%
+C30  freq:571  vol:316 temp:68  nonce:4082718  err:57   crc:0    x:0   / 0 repeat:1    pct: 99.1%/ 95.3%
+C31  freq:563  vol:317 temp:68  nonce:4002072  err:56   crc:0    x:0   / 0 repeat:2    pct:100.4%/ 98.6%
+C32  freq:568  vol:318 temp:67  nonce:4030641  err:61   crc:0    x:0   / 0 repeat:0    pct:100.2%/105.5%
+C33  freq:559  vol:319 temp:69  nonce:3992640  err:56   crc:0    x:0   / 0 repeat:1    pct:101.2%/105.0%
+C34  freq:557  vol:321 temp:71  nonce:3972535  err:61   crc:0    x:0   / 0 repeat:0    pct: 99.7%/ 94.1%
+C35  freq:574  vol:320 temp:71  nonce:4081014  err:65   crc:0    x:0   / 0 repeat:3    pct:101.5%/108.1%
+C36  freq:584  vol:317 temp:72  nonce:4157733  err:61   crc:0    x:0   / 0 repeat:2    pct:100.1%/ 98.7%
+C37  freq:556  vol:317 temp:72  nonce:3958512  err:54   crc:0    x:0   / 0 repeat:0    pct:100.0%/ 99.3%
+C38  freq:566  vol:316 temp:71  nonce:4015985  err:60   crc:0    x:0   / 0 repeat:4    pct: 98.0%/ 97.7%
+C39  freq:569  vol:314 temp:73  nonce:4063019  err:56   crc:0    x:0   / 0 repeat:0    pct:100.6%/101.0%
+C40  freq:544  vol:318 temp:74  nonce:3854946  err:69   crc:0    x:0   / 0 repeat:2    pct: 98.8%/ 95.4%
+C41  freq:575  vol:315 temp:75  nonce:4108064  err:55   crc:0    x:0   / 0 repeat:1    pct:100.9%/ 99.6%
+C42  freq:564  vol:317 temp:76  nonce:4005969  err:63   crc:0    x:0   / 0 repeat:4    pct:100.2%/100.3%
+C43  freq:557  vol:318 temp:75  nonce:3964120  err:58   crc:0    x:0   / 0 repeat:2    pct: 98.8%/ 99.5%
+C44  freq:568  vol:316 temp:75  nonce:4006863  err:44   crc:0    x:0   / 0 repeat:0    pct: 98.7%/ 95.0%
+C45  freq:550  vol:313 temp:76  nonce:3910070  err:52   crc:0    x:0   / 0 repeat:2    pct: 98.6%/ 98.8%
+C46  freq:554  vol:315 temp:77  nonce:3932413  err:67   crc:0    x:0   / 0 repeat:3    pct:100.2%/ 98.7%
+C47  freq:584  vol:312 temp:76  nonce:4151816  err:51   crc:0    x:0   / 0 repeat:1    pct:100.7%/101.4%
+C48  freq:558  vol:312 temp:77  nonce:3959115  err:69   crc:0    x:0   / 0 repeat:3    pct: 99.7%/ 95.2%
+C49  freq:572  vol:311 temp:78  nonce:4057190  err:61   crc:0    x:0   / 0 repeat:7    pct: 97.8%/ 99.7%
+C50  freq:560  vol:310 temp:77  nonce:3966962  err:54   crc:0    x:0   / 0 repeat:3    pct: 98.6%/100.0%
+C51  freq:569  vol:309 temp:78  nonce:4020166  err:68   crc:0    x:0   / 0 repeat:2    pct: 99.9%/101.2%
+C52  freq:561  vol:314 temp:79  nonce:3993439  err:60   crc:0    x:0   / 0 repeat:1    pct: 98.6%/ 98.7%
+C53  freq:561  vol:312 temp:79  nonce:3983608  err:71   crc:0    x:0   / 0 repeat:1    pct:100.5%/101.5%
+C54  freq:560  vol:312 temp:80  nonce:3968318  err:51   crc:0    x:0   / 0 repeat:5    pct:100.1%/102.0%
+C55  freq:564  vol:312 temp:81  nonce:3989203  err:62   crc:0    x:0   / 0 repeat:2    pct: 99.9%/101.8%
+C56  freq:563  vol:312 temp:80  nonce:3972525  err:61   crc:0    x:0   / 0 repeat:1    pct: 99.2%/ 97.8%
+C57  freq:554  vol:306 temp:82  nonce:3935852  err:67   crc:0    x:0   / 0 repeat:4    pct:100.9%/ 96.3%
+C58  freq:566  vol:308 temp:83  nonce:4024163  err:67   crc:0    x:0   / 0 repeat:2    pct:100.2%/ 97.2%
+C59  freq:556  vol:308 temp:82  nonce:3952873  err:75   crc:0    x:0   / 0 repeat:2    pct:100.9%/ 98.7%
+C60  freq:560  vol:308 temp:84  nonce:3974750  err:56   crc:0    x:0   / 0 repeat:0    pct: 99.9%/ 98.7%
+C61  freq:561  vol:308 temp:84  nonce:3964985  err:56   crc:0    x:0   / 0 repeat:4    pct:100.9%/101.0%
+C62  freq:556  vol:308 temp:82  nonce:3935511  err:57   crc:0    x:0   / 0 repeat:3    pct:100.7%/ 99.6%
+C63  freq:549  vol:304 temp:84  nonce:3893072  err:59   crc:0    x:0   / 0 repeat:3    pct: 99.9%/100.4%
+C64  freq:563  vol:308 temp:85  nonce:4009962  err:70   crc:0    x:0   / 0 repeat:2    pct: 97.3%/ 97.0%
+C65  freq:557  vol:307 temp:86  nonce:3964397  err:52   crc:0    x:0   / 0 repeat:1    pct:100.2%/101.1%
+C66  freq:571  vol:310 temp:90  nonce:4062784  err:64   crc:0    x:0   / 0 repeat:4    pct:100.7%/ 98.7%
+C67  freq:561  vol:306 temp:88  nonce:3981821  err:54   crc:0    x:0   / 0 repeat:3    pct:100.6%/ 94.6%
+C68  freq:530  vol:306 temp:88  nonce:3750227  err:63   crc:0    x:0   / 0 repeat:2    pct:102.9%/106.6%
+C69  freq:522  vol:297 temp:84  nonce:3693892  err:58   crc:0    x:0   / 0 repeat:1    pct: 98.9%/ 95.1%
+C70  freq:556  vol:301 temp:90  nonce:3915017  err:60   crc:0    x:0   / 0 repeat:2    pct: 99.8%/101.8%
+C71  freq:586  vol:305 temp:89  nonce:4139492  err:54   crc:0    x:0   / 0 repeat:1    pct: 98.2%/ 97.7%
+C72  freq:568  vol:305 temp:88  nonce:4027312  err:57   crc:0    x:0   / 0 repeat:3    pct: 99.6%/102.0%
+C73  freq:556  vol:305 temp:88  nonce:3926665  err:56   crc:0    x:0   / 0 repeat:2    pct: 99.5%/ 99.4%
+C74  freq:543  vol:305 temp:85  nonce:3829017  err:63   crc:0    x:0   / 0 repeat:4    pct:100.8%/105.6%
+C75  freq:549  vol:301 temp:83  nonce:3865127  err:61   crc:0    x:0   / 0 repeat:4    pct: 99.8%/102.7%
+C76  freq:554  vol:304 temp:87  nonce:3903971  err:57   crc:0    x:0   / 0 repeat:2    pct: 99.8%/ 97.7%
+C77  freq:570  vol:304 temp:87  nonce:3995600  err:66   crc:0    x:0   / 0 repeat:2    pct: 99.3%/ 98.9%
+C78  freq:557  vol:308 temp:84  nonce:3952266  err:47   crc:0    x:0   / 0 repeat:3    pct: 99.7%/102.8%
+C79  freq:563  vol:308 temp:85  nonce:3987209  err:47   crc:0    x:0   / 0 repeat:9    pct: 99.1%/100.7%
+C80  freq:554  vol:308 temp:83  nonce:3922728  err:57   crc:0    x:0   / 0 repeat:1    pct: 98.1%/ 95.7%
+C81  freq:555  vol:309 temp:81  nonce:3947890  err:61   crc:0    x:0   / 0 repeat:0    pct: 99.6%/104.1%
+C82  freq:567  vol:312 temp:83  nonce:4025071  err:69   crc:0    x:0   / 0 repeat:3    pct:100.8%/102.0%
+C83  freq:559  vol:313 temp:81  nonce:3970225  err:58   crc:0    x:0   / 0 repeat:0    pct:101.3%/102.6%
+C84  freq:558  vol:308 temp:79  nonce:3937946  err:59   crc:0    x:0   / 0 repeat:1    pct:100.1%/102.5%
+C85  freq:569  vol:310 temp:82  nonce:4017445  err:72   crc:0    x:0   / 0 repeat:4    pct:100.1%/ 96.8%
+C86  freq:562  vol:309 temp:80  nonce:3966288  err:61   crc:0    x:0   / 0 repeat:0    pct: 98.9%/ 97.4%
+C87  freq:555  vol:308 temp:79  nonce:3937007  err:66   crc:0    x:0   / 0 repeat:2    pct: 98.4%/ 97.5%
+C88  freq:573  vol:311 temp:80  nonce:4046399  err:57   crc:0    x:0   / 0 repeat:3    pct: 98.7%/100.1%
+C89  freq:562  vol:311 temp:78  nonce:3991339  err:64   crc:0    x:0   / 0 repeat:3    pct: 99.8%/104.5%
+C90  freq:560  vol:311 temp:77  nonce:3964571  err:68   crc:0    x:0   / 0 repeat:2    pct: 97.9%/ 97.9%
+C91  freq:573  vol:311 temp:79  nonce:4037377  err:56   crc:0    x:0   / 0 repeat:1    pct:100.6%/105.0%
+C92  freq:560  vol:311 temp:78  nonce:3962439  err:60   crc:0    x:0   / 0 repeat:4    pct: 99.7%/103.4%
+C93  freq:560  vol:312 temp:76  nonce:3972331  err:66   crc:0    x:0   / 0 repeat:1    pct: 97.5%/ 97.3%
+C94  freq:566  vol:314 temp:76  nonce:3994826  err:61   crc:0    x:0   / 0 repeat:3    pct: 99.1%/ 98.2%
+C95  freq:563  vol:313 temp:75  nonce:3931456  err:60   crc:0    x:0   / 0 repeat:1    pct: 97.1%/ 94.2%
+C96  freq:564  vol:317 temp:73  nonce:4008984  err:62   crc:0    x:0   / 0 repeat:5    pct:100.5%/ 96.0%
+C97  freq:575  vol:316 temp:76  nonce:4052934  err:77   crc:0    x:0   / 0 repeat:4    pct: 98.4%/ 98.4%
+C98  freq:561  vol:316 temp:74  nonce:3951168  err:76   crc:0    x:0   / 0 repeat:2    pct: 97.5%/ 98.8%
+C99  freq:562  vol:314 temp:72  nonce:4008512  err:49   crc:0    x:0   / 0 repeat:3    pct:101.2%/100.3%
+C100 freq:562  vol:316 temp:73  nonce:3966025  err:43   crc:0    x:0   / 0 repeat:2    pct:100.1%/ 98.0%
+C101 freq:580  vol:317 temp:72  nonce:4108733  err:64   crc:0    x:0   / 0 repeat:1    pct: 99.3%/105.1%
+C102 freq:574  vol:320 temp:69  nonce:4091950  err:56   crc:0    x:0   / 0 repeat:3    pct:100.2%/ 99.0%
+C103 freq:559  vol:320 temp:71  nonce:3972072  err:70   crc:0    x:0   / 0 repeat:3    pct: 98.4%/ 99.1%
+C104 freq:566  vol:320 temp:70  nonce:4004268  err:77   crc:0    x:0   / 0 repeat:2    pct: 99.5%/105.3%
+C105 freq:559  vol:315 temp:67  nonce:3979783  err:53   crc:0    x:0   / 0 repeat:3    pct: 99.5%/101.9%
+C106 freq:558  vol:319 temp:69  nonce:3962395  err:49   crc:0    x:0   / 0 repeat:2    pct: 98.6%/ 99.5%
+C107 freq:578  vol:318 temp:68  nonce:4075582  err:67   crc:0    x:0   / 0 repeat:2    pct: 97.1%/ 95.4%
+C108 freq:557  vol:324 temp:65  nonce:3956966  err:62   crc:0    x:0   / 0 repeat:0    pct: 99.7%/103.8%
+C109 freq:573  vol:324 temp:67  nonce:4055770  err:58   crc:0    x:0   / 0 repeat:1    pct: 99.4%/ 97.5%
+C110 freq:565  vol:324 temp:65  nonce:4013783  err:49   crc:0    x:0   / 0 repeat:4    pct: 99.2%/ 97.9%
+C111 freq:568  vol:319 temp:63  nonce:3968087  err:64   crc:0    x:0   / 0 repeat:2    pct: 96.1%/ 94.0%
+C112 freq:567  vol:321 temp:65  nonce:3928635  err:58   crc:0    x:0   / 0 repeat:0    pct: 93.9%/ 92.5%
+C113 freq:573  vol:322 temp:63  nonce:4033477  err:56   crc:0    x:0   / 0 repeat:2    pct: 96.1%/ 94.9%
+C114 freq:580  vol:322 temp:60  nonce:4077661  err:59   crc:0    x:0   / 0 repeat:1    pct: 98.5%/ 97.7%
+C115 freq:568  vol:323 temp:61  nonce:4024119  err:67   crc:0    x:1   / 0 repeat:4    pct: 98.8%/ 95.6%
+C116 freq:562  vol:324 temp:60  nonce:3985557  err:64   crc:0    x:1   / 0 repeat:3    pct: 99.7%/ 95.6%
+C117 freq:575  vol:320 temp:56  nonce:4059343  err:70   crc:0    x:0   / 0 repeat:2    pct: 96.8%/ 96.1%
+C118 freq:574  vol:322 temp:59  nonce:4048414  err:62   crc:0    x:0   / 0 repeat:1    pct: 99.0%/ 98.3%
+C119 freq:565  vol:325 temp:57  nonce:4012515  err:48   crc:0    x:0   / 0 repeat:2    pct: 98.7%/ 97.9%
+C120 freq:560  vol:323 temp:55  nonce:3963191  err:46   crc:0    x:0   / 0 repeat:3    pct: 99.5%/ 98.5%
+C121 freq:580  vol:322 temp:56  nonce:4097466  err:59   crc:0    x:0   / 0 repeat:2    pct: 98.9%/ 98.5%
+C122 freq:580  vol:322 temp:54  nonce:4120565  err:60   crc:0    x:0   / 0 repeat:1    pct:102.4%/101.9%
+C123 freq:562  vol:326 temp:52  nonce:3935015  err:57   crc:0    x:0   / 0 repeat:3    pct: 92.6%/ 90.2%
+C124 freq:587  vol:328 temp:54  nonce:4105002  err:59   crc:0    x:1   / 0 repeat:1    pct: 92.2%/ 91.1%
+C125 freq:568  vol:329 temp:52  nonce:3964368  err:65   crc:0    x:1   / 0 repeat:5    pct: 92.4%/ 95.8%
+C126 freq:568  vol:323 temp:50  nonce:3956563  err:61   crc:0    x:0   / 0 repeat:3    pct: 91.0%/ 88.4%
+C127 freq:585  vol:323 temp:52  nonce:4065058  err:65   crc:0    x:0   / 0 repeat:4    pct: 92.0%/ 89.4%
+C128 freq:563  vol:324 temp:49  nonce:3851358  err:61   crc:0    x:0   / 0 repeat:2    pct: 89.7%/ 85.0%
+C129 freq:560  vol:330 temp:47  nonce:3891210  err:72   crc:0    x:0   / 0 repeat:4    pct: 92.0%/ 90.1%
+C130 freq:579  vol:331 temp:48  nonce:4034938  err:66   crc:0    x:0   / 0 repeat:4    pct: 93.4%/ 91.4%
+C131 freq:572  vol:332 temp:47  nonce:4016809  err:55   crc:0    x:1   / 0 repeat:2    pct: 94.4%/ 91.4%
+C132 freq:561  vol:329 temp:47  nonce:3740440  err:76   crc:0    x:1   / 0 repeat:3    pct: 78.5%/ 79.1%
+C133 freq:572  vol:330 temp:47  nonce:3833619  err:58   crc:0    x:0   / 0 repeat:1    pct: 82.0%/ 77.9%
+C134 freq:586  vol:330 temp:45  nonce:3982290  err:60   crc:0    x:0   / 0 repeat:1    pct: 85.5%/ 85.5%
+slot: 1, freq: 523, temp: 59.4, step: 20
+diff: 3, interval: 672/890/760, delay: 0.0000/0.0000%%
+nonce valid: 490675020(2475/s), before: 2136739, submit: 0.0, err: 7472, crc: 0, repeat: 385
+C0   freq:522  vol:329 temp:39  nonce:3466345  err:68   crc:0    x:0   / 0 repeat:3    pct: 86.1%/ 86.7%
+C1   freq:516  vol:329 temp:42  nonce:3413774  err:44   crc:0    x:0   / 0 repeat:4    pct: 87.1%/ 84.8%
+C2   freq:540  vol:327 temp:44  nonce:3391795  err:52   crc:0    x:0   / 0 repeat:1    pct: 75.0%/ 77.0%
+C3   freq:549  vol:322 temp:44  nonce:3599005  err:58   crc:0    x:0   / 0 repeat:2    pct: 85.0%/ 89.4%
+C4   freq:514  vol:328 temp:43  nonce:3537082  err:52   crc:0    x:0   / 0 repeat:3    pct: 91.8%/ 92.0%
+C5   freq:516  vol:328 temp:42  nonce:3555116  err:59   crc:0    x:0   / 0 repeat:3    pct: 93.2%/ 95.0%
+C6   freq:514  vol:326 temp:43  nonce:3545570  err:57   crc:0    x:0   / 0 repeat:3    pct: 93.6%/ 95.3%
+C7   freq:527  vol:326 temp:44  nonce:3637444  err:64   crc:0    x:0   / 0 repeat:1    pct: 92.6%/ 94.9%
+C8   freq:531  vol:326 temp:45  nonce:3691258  err:53   crc:0    x:0   / 0 repeat:4    pct: 95.7%/ 93.9%
+C9   freq:539  vol:326 temp:47  nonce:3708208  err:56   crc:0    x:0   / 0 repeat:2    pct: 92.4%/ 89.9%
+C10  freq:532  vol:330 temp:46  nonce:3666974  err:60   crc:0    x:0   / 0 repeat:2    pct: 93.5%/ 91.3%
+C11  freq:512  vol:328 temp:45  nonce:3583150  err:57   crc:0    x:0   / 0 repeat:2    pct: 95.8%/ 98.7%
+C12  freq:507  vol:326 temp:45  nonce:3535035  err:60   crc:0    x:0   / 0 repeat:7    pct: 96.3%/ 94.8%
+C13  freq:525  vol:326 temp:48  nonce:3642647  err:41   crc:0    x:0   / 0 repeat:5    pct: 95.0%/ 97.7%
+C14  freq:536  vol:325 temp:49  nonce:3658891  err:58   crc:0    x:0   / 0 repeat:4    pct: 93.4%/ 93.8%
+C15  freq:542  vol:325 temp:51  nonce:3792768  err:63   crc:0    x:0   / 0 repeat:4    pct: 96.3%/ 97.4%
+C16  freq:514  vol:328 temp:51  nonce:3547005  err:48   crc:0    x:0   / 0 repeat:6    pct: 94.9%/ 92.4%
+C17  freq:510  vol:328 temp:46  nonce:3493922  err:55   crc:0    x:0   / 0 repeat:1    pct: 94.6%/ 97.7%
+C18  freq:498  vol:328 temp:49  nonce:3532314  err:64   crc:0    x:0   / 0 repeat:3    pct: 99.6%/101.3%
+C19  freq:515  vol:328 temp:53  nonce:3543833  err:60   crc:0    x:0   / 0 repeat:3    pct: 98.2%/106.1%
+C20  freq:538  vol:327 temp:53  nonce:3825374  err:57   crc:0    x:0   / 0 repeat:1    pct: 98.5%/ 98.2%
+C21  freq:541  vol:320 temp:56  nonce:3788727  err:51   crc:0    x:0   / 0 repeat:4    pct: 97.6%/100.9%
+C22  freq:533  vol:323 temp:56  nonce:3763831  err:75   crc:0    x:0   / 0 repeat:2    pct: 99.4%/ 98.6%
+C23  freq:494  vol:323 temp:52  nonce:3403479  err:54   crc:0    x:0   / 0 repeat:3    pct: 97.4%/ 96.6%
+C24  freq:506  vol:322 temp:53  nonce:3509871  err:56   crc:0    x:0   / 0 repeat:3    pct: 96.8%/ 93.2%
+C25  freq:532  vol:322 temp:57  nonce:3652512  err:52   crc:0    x:0   / 0 repeat:2    pct: 94.7%/ 91.8%
+C26  freq:535  vol:322 temp:58  nonce:3721143  err:47   crc:0    x:0   / 0 repeat:4    pct: 95.0%/ 93.6%
+C27  freq:546  vol:319 temp:60  nonce:3799061  err:48   crc:0    x:0   / 0 repeat:3    pct: 98.4%/ 94.9%
+C28  freq:518  vol:325 temp:59  nonce:3626116  err:52   crc:0    x:0   / 0 repeat:0    pct: 96.8%/ 99.4%
+C29  freq:507  vol:324 temp:55  nonce:3564429  err:60   crc:0    x:0   / 0 repeat:3    pct: 99.4%/101.5%
+C30  freq:504  vol:318 temp:58  nonce:3571313  err:67   crc:0    x:0   / 0 repeat:3    pct: 99.1%/101.3%
+C31  freq:531  vol:316 temp:62  nonce:3714687  err:53   crc:0    x:0   / 0 repeat:1    pct: 99.7%/102.3%
+C32  freq:528  vol:319 temp:61  nonce:3662473  err:55   crc:0    x:0   / 0 repeat:2    pct: 98.7%/ 97.5%
+C33  freq:522  vol:316 temp:63  nonce:3634269  err:63   crc:0    x:0   / 0 repeat:2    pct: 98.1%/100.6%
+C34  freq:522  vol:319 temp:63  nonce:3633071  err:52   crc:0    x:0   / 0 repeat:2    pct: 98.4%/ 95.6%
+C35  freq:515  vol:318 temp:60  nonce:3584436  err:64   crc:0    x:0   / 0 repeat:3    pct: 96.4%/ 96.1%
+C36  freq:525  vol:315 temp:62  nonce:3698250  err:58   crc:0    x:0   / 0 repeat:5    pct: 96.6%/ 95.5%
+C37  freq:518  vol:316 temp:65  nonce:3648210  err:63   crc:0    x:0   / 0 repeat:5    pct: 96.9%/100.4%
+C38  freq:525  vol:315 temp:66  nonce:3712102  err:67   crc:0    x:0   / 0 repeat:5    pct: 99.4%/103.4%
+C39  freq:539  vol:312 temp:67  nonce:3780490  err:44   crc:0    x:0   / 0 repeat:3    pct: 98.1%/ 98.1%
+C40  freq:518  vol:315 temp:67  nonce:3630302  err:57   crc:0    x:0   / 0 repeat:2    pct:100.6%/108.7%
+C41  freq:517  vol:315 temp:64  nonce:3636675  err:56   crc:0    x:0   / 0 repeat:5    pct: 99.5%/ 99.0%
+C42  freq:509  vol:317 temp:65  nonce:3592673  err:48   crc:0    x:0   / 0 repeat:4    pct: 99.3%/ 98.6%
+C43  freq:512  vol:317 temp:68  nonce:3612508  err:63   crc:0    x:0   / 0 repeat:3    pct: 99.5%/100.1%
+C44  freq:535  vol:316 temp:69  nonce:3794188  err:45   crc:0    x:0   / 0 repeat:4    pct: 99.6%/102.5%
+C45  freq:524  vol:311 temp:70  nonce:3704290  err:55   crc:0    x:0   / 0 repeat:1    pct: 98.3%/ 95.3%
+C46  freq:528  vol:315 temp:69  nonce:3735096  err:79   crc:0    x:0   / 0 repeat:1    pct:100.8%/ 99.2%
+C47  freq:506  vol:315 temp:67  nonce:3588642  err:60   crc:0    x:0   / 0 repeat:2    pct:102.8%/105.9%
+C48  freq:516  vol:312 temp:68  nonce:3660091  err:66   crc:0    x:0   / 0 repeat:1    pct: 98.5%/ 95.0%
+C49  freq:507  vol:313 temp:71  nonce:3546305  err:60   crc:0    x:0   / 0 repeat:0    pct:100.7%/108.1%
+C50  freq:529  vol:311 temp:71  nonce:3735730  err:45   crc:0    x:0   / 0 repeat:0    pct: 99.5%/ 99.4%
+C51  freq:525  vol:312 temp:73  nonce:3728798  err:51   crc:0    x:0   / 0 repeat:1    pct: 99.2%/104.1%
+C52  freq:521  vol:315 temp:73  nonce:3661921  err:58   crc:0    x:0   / 0 repeat:4    pct:100.6%/ 96.0%
+C53  freq:513  vol:314 temp:70  nonce:3624206  err:44   crc:0    x:0   / 0 repeat:2    pct:100.3%/ 98.8%
+C54  freq:520  vol:309 temp:71  nonce:3665945  err:66   crc:0    x:0   / 0 repeat:3    pct: 99.1%/101.8%
+C55  freq:516  vol:309 temp:75  nonce:3631096  err:60   crc:0    x:0   / 0 repeat:5    pct: 99.8%/104.1%
+C56  freq:526  vol:310 temp:74  nonce:3728033  err:60   crc:0    x:0   / 0 repeat:3    pct:101.5%/103.4%
+C57  freq:518  vol:310 temp:75  nonce:3692287  err:69   crc:0    x:0   / 0 repeat:2    pct: 99.4%/ 95.3%
+C58  freq:513  vol:314 temp:75  nonce:3628817  err:47   crc:0    x:0   / 0 repeat:5    pct:100.1%/ 96.9%
+C59  freq:513  vol:314 temp:73  nonce:3656254  err:57   crc:0    x:0   / 0 repeat:5    pct: 98.2%/105.0%
+C60  freq:510  vol:309 temp:73  nonce:3589595  err:57   crc:0    x:0   / 0 repeat:3    pct:100.8%/ 96.9%
+C61  freq:535  vol:308 temp:77  nonce:3781743  err:51   crc:0    x:0   / 0 repeat:5    pct:100.4%/104.0%
+C62  freq:523  vol:308 temp:75  nonce:3690664  err:50   crc:0    x:0   / 0 repeat:6    pct:101.2%/103.6%
+C63  freq:521  vol:308 temp:77  nonce:3697526  err:61   crc:0    x:0   / 0 repeat:3    pct:100.6%/101.7%
+C64  freq:518  vol:313 temp:76  nonce:3640151  err:39   crc:0    x:0   / 0 repeat:1    pct:100.0%/ 98.3%
+C65  freq:520  vol:312 temp:76  nonce:3664742  err:51   crc:0    x:0   / 0 repeat:6    pct:100.2%/104.3%
+C66  freq:532  vol:310 temp:77  nonce:3754934  err:46   crc:0    x:0   / 0 repeat:2    pct: 99.3%/ 97.8%
+C67  freq:507  vol:306 temp:76  nonce:3566512  err:56   crc:0    x:0   / 0 repeat:3    pct: 99.1%/ 97.7%
+C68  freq:519  vol:306 temp:76  nonce:3658958  err:63   crc:0    x:0   / 0 repeat:3    pct: 99.1%/100.3%
+C69  freq:504  vol:309 temp:68  nonce:3495283  err:57   crc:0    x:0   / 0 repeat:4    pct: 98.3%/ 97.2%
+C70  freq:505  vol:314 temp:70  nonce:3552741  err:46   crc:0    x:0   / 0 repeat:5    pct: 98.6%/ 97.5%
+C71  freq:541  vol:317 temp:73  nonce:3799187  err:61   crc:0    x:0   / 0 repeat:5    pct: 98.5%/ 96.8%
+C72  freq:523  vol:314 temp:72  nonce:3646690  err:63   crc:0    x:0   / 0 repeat:1    pct:100.0%/ 99.1%
+C73  freq:516  vol:315 temp:70  nonce:3586904  err:56   crc:0    x:0   / 0 repeat:0    pct: 97.5%/ 94.5%
+C74  freq:506  vol:315 temp:68  nonce:3552974  err:59   crc:0    x:0   / 0 repeat:3    pct:100.2%/105.3%
+C75  freq:512  vol:312 temp:66  nonce:3592154  err:51   crc:0    x:0   / 0 repeat:2    pct: 97.1%/ 98.8%
+C76  freq:524  vol:314 temp:69  nonce:3677032  err:54   crc:0    x:0   / 0 repeat:5    pct: 99.4%/101.9%
+C77  freq:537  vol:314 temp:70  nonce:3743803  err:63   crc:0    x:0   / 0 repeat:3    pct: 96.8%/101.7%
+C78  freq:526  vol:316 temp:69  nonce:3706305  err:64   crc:0    x:0   / 0 repeat:4    pct: 99.7%/ 96.2%
+C79  freq:527  vol:316 temp:67  nonce:3707981  err:49   crc:0    x:0   / 0 repeat:3    pct: 98.1%/ 98.5%
+C80  freq:518  vol:315 temp:66  nonce:3602808  err:61   crc:0    x:0   / 0 repeat:2    pct: 99.0%/ 98.6%
+C81  freq:508  vol:315 temp:65  nonce:3592421  err:48   crc:0    x:0   / 0 repeat:3    pct: 96.2%/ 94.1%
+C82  freq:527  vol:319 temp:66  nonce:3730012  err:50   crc:0    x:0   / 0 repeat:1    pct:100.2%/103.7%
+C83  freq:522  vol:319 temp:68  nonce:3666485  err:45   crc:0    x:0   / 0 repeat:5    pct: 97.9%/ 97.2%
+C84  freq:537  vol:315 temp:66  nonce:3690577  err:65   crc:0    x:0   / 0 repeat:3    pct: 96.9%/ 97.0%
+C85  freq:526  vol:317 temp:65  nonce:3659565  err:55   crc:0    x:0   / 0 repeat:2    pct: 95.3%/ 90.6%
+C86  freq:512  vol:315 temp:64  nonce:3522915  err:55   crc:0    x:0   / 0 repeat:3    pct: 98.5%/ 98.6%
+C87  freq:519  vol:315 temp:63  nonce:3653551  err:57   crc:0    x:0   / 0 repeat:2    pct: 99.4%/ 97.6%
+C88  freq:529  vol:317 temp:64  nonce:3701902  err:55   crc:0    x:0   / 0 repeat:4    pct: 98.3%/ 98.3%
+C89  freq:522  vol:317 temp:64  nonce:3618281  err:58   crc:0    x:0   / 0 repeat:2    pct: 98.2%/ 93.9%
+C90  freq:523  vol:316 temp:63  nonce:3654099  err:59   crc:0    x:0   / 0 repeat:2    pct: 97.8%/ 96.5%
+C91  freq:528  vol:317 temp:63  nonce:3663147  err:49   crc:0    x:0   / 0 repeat:5    pct: 96.7%/ 96.5%
+C92  freq:524  vol:315 temp:61  nonce:3639023  err:56   crc:0    x:0   / 0 repeat:4    pct: 98.2%/100.2%
+C93  freq:507  vol:315 temp:61  nonce:3574507  err:46   crc:0    x:0   / 0 repeat:2    pct: 99.0%/ 97.3%
+C94  freq:521  vol:316 temp:63  nonce:3677637  err:52   crc:0    x:0   / 0 repeat:2    pct: 98.4%/ 98.9%
+C95  freq:535  vol:317 temp:62  nonce:3771273  err:59   crc:0    x:0   / 0 repeat:3    pct: 97.8%/ 99.7%
+C96  freq:530  vol:319 temp:60  nonce:3720456  err:75   crc:0    x:0   / 0 repeat:2    pct: 98.9%/ 95.6%
+C97  freq:530  vol:319 temp:60  nonce:3735959  err:53   crc:0    x:0   / 0 repeat:2    pct:100.3%/ 93.9%
+C98  freq:504  vol:320 temp:59  nonce:3559600  err:54   crc:0    x:0   / 0 repeat:4    pct:101.4%/100.3%
+C99  freq:520  vol:319 temp:57  nonce:3641856  err:62   crc:0    x:0   / 0 repeat:6    pct: 98.0%/ 99.5%
+C100 freq:525  vol:320 temp:58  nonce:3643691  err:52   crc:0    x:0   / 0 repeat:4    pct: 97.0%/ 98.1%
+C101 freq:531  vol:322 temp:58  nonce:3695137  err:45   crc:0    x:0   / 0 repeat:2    pct: 98.1%/ 99.6%
+C102 freq:532  vol:320 temp:56  nonce:3769972  err:59   crc:0    x:0   / 0 repeat:3    pct:100.1%/100.5%
+C103 freq:520  vol:320 temp:57  nonce:3687964  err:62   crc:0    x:0   / 0 repeat:2    pct:100.5%/102.7%
+C104 freq:520  vol:320 temp:56  nonce:3675415  err:58   crc:0    x:0   / 0 repeat:2    pct: 98.9%/106.6%
+C105 freq:518  vol:321 temp:54  nonce:3639207  err:63   crc:0    x:0   / 0 repeat:1    pct: 98.6%/ 98.3%
+C106 freq:528  vol:322 temp:55  nonce:3736999  err:67   crc:0    x:0   / 0 repeat:1    pct: 99.3%/100.9%
+C107 freq:523  vol:322 temp:54  nonce:3651239  err:56   crc:0    x:0   / 0 repeat:4    pct: 98.7%/ 95.5%
+C108 freq:529  vol:322 temp:52  nonce:3700584  err:53   crc:0    x:0   / 0 repeat:2    pct: 97.9%/ 95.8%
+C109 freq:522  vol:323 temp:55  nonce:3697675  err:45   crc:0    x:0   / 0 repeat:0    pct: 98.8%/ 98.9%
+C110 freq:518  vol:323 temp:52  nonce:3630122  err:60   crc:0    x:0   / 0 repeat:0    pct: 94.7%/ 94.8%
+C111 freq:525  vol:324 temp:51  nonce:3647522  err:48   crc:0    x:0   / 0 repeat:1    pct: 94.9%/ 92.8%
+C112 freq:539  vol:325 temp:53  nonce:3625607  err:49   crc:0    x:0   / 0 repeat:1    pct: 92.6%/ 93.9%
+C113 freq:522  vol:327 temp:49  nonce:3568469  err:59   crc:0    x:0   / 0 repeat:4    pct: 92.4%/ 90.2%
+C114 freq:527  vol:326 temp:48  nonce:3677360  err:60   crc:0    x:0   / 0 repeat:2    pct: 96.7%/ 98.2%
+C115 freq:530  vol:327 temp:50  nonce:3675303  err:50   crc:0    x:0   / 0 repeat:4    pct: 95.6%/ 99.0%
+C116 freq:532  vol:327 temp:48  nonce:3691347  err:52   crc:0    x:0   / 0 repeat:2    pct: 97.3%/ 94.0%
+C117 freq:523  vol:327 temp:46  nonce:3605676  err:46   crc:0    x:0   / 0 repeat:4    pct: 93.9%/ 96.9%
+C118 freq:529  vol:329 temp:47  nonce:3682289  err:60   crc:0    x:0   / 0 repeat:1    pct: 98.6%/ 96.7%
+C119 freq:523  vol:330 temp:46  nonce:3643812  err:50   crc:0    x:0   / 0 repeat:2    pct: 96.6%/ 95.9%
+C120 freq:527  vol:324 temp:44  nonce:3611337  err:56   crc:0    x:0   / 0 repeat:5    pct: 92.4%/ 95.9%
+C121 freq:530  vol:324 temp:45  nonce:3696892  err:55   crc:0    x:0   / 0 repeat:1    pct: 95.0%/ 94.0%
+C122 freq:529  vol:323 temp:45  nonce:3641942  err:41   crc:0    x:0   / 0 repeat:3    pct: 92.8%/ 93.0%
+C123 freq:524  vol:332 temp:42  nonce:3663324  err:52   crc:0    x:0   / 0 repeat:3    pct: 97.6%/ 98.1%
+C124 freq:523  vol:333 temp:42  nonce:3630153  err:48   crc:0    x:0   / 0 repeat:2    pct: 96.3%/ 96.4%
+C125 freq:536  vol:333 temp:42  nonce:3741881  err:55   crc:0    x:1   / 0 repeat:4    pct: 95.5%/ 96.7%
+C126 freq:535  vol:327 temp:41  nonce:3532230  err:54   crc:0    x:1   / 0 repeat:4    pct: 84.0%/ 81.7%
+C127 freq:515  vol:329 temp:41  nonce:3485848  err:36   crc:0    x:0   / 0 repeat:5    pct: 93.1%/ 92.0%
+C128 freq:524  vol:328 temp:41  nonce:3529464  err:45   crc:0    x:0   / 0 repeat:1    pct: 88.1%/ 89.4%
+C129 freq:525  vol:329 temp:38  nonce:3534678  err:51   crc:0    x:0   / 0 repeat:4    pct: 89.3%/ 91.9%
+C130 freq:527  vol:332 temp:39  nonce:3497988  err:50   crc:0    x:0   / 0 repeat:2    pct: 87.2%/ 89.2%
+C131 freq:532  vol:332 temp:38  nonce:3491777  err:47   crc:0    x:0   / 0 repeat:3    pct: 83.3%/ 90.5%
+C132 freq:531  vol:329 temp:36  nonce:3484098  err:49   crc:0    x:0   / 0 repeat:3    pct: 83.9%/ 83.1%
+C133 freq:515  vol:331 temp:36  nonce:3225663  err:64   crc:0    x:0   / 0 repeat:3    pct: 68.1%/ 68.4%
+C134 freq:521  vol:331 temp:36  nonce:3290567  err:51   crc:0    x:0   / 0 repeat:2    pct: 74.6%/ 72.9%
+slot: 2, freq: 577, temp: 78.0, step: 20
+diff: 3, interval: 672/794/664, delay: 0.0000/0.0000%%
+nonce valid: 550590045(2777/s), before: 2393930, submit: 0.0, err: 8452, crc: 0, repeat: 424
+C0   freq:593  vol:326 temp:56  nonce:4186258  err:59   crc:0    x:0   / 0 repeat:3    pct:101.2%/107.2%
+C1   freq:592  vol:325 temp:56  nonce:4159244  err:74   crc:0    x:0   / 0 repeat:1    pct: 98.6%/102.8%
+C2   freq:575  vol:326 temp:54  nonce:4056345  err:44   crc:0    x:0   / 0 repeat:2    pct:101.2%/103.1%
+C3   freq:578  vol:328 temp:54  nonce:4060879  err:72   crc:0    x:0   / 0 repeat:0    pct:101.8%/105.7%
+C4   freq:588  vol:330 temp:57  nonce:4157351  err:64   crc:0    x:0   / 0 repeat:3    pct:101.5%/105.4%
+C5   freq:597  vol:332 temp:61  nonce:4198551  err:71   crc:0    x:0   / 0 repeat:4    pct:100.6%/101.9%
+C6   freq:595  vol:323 temp:65  nonce:4244834  err:63   crc:0    x:0   / 0 repeat:3    pct: 99.0%/101.3%
+C7   freq:580  vol:323 temp:59  nonce:4130741  err:55   crc:0    x:0   / 0 repeat:4    pct: 99.6%/ 94.5%
+C8   freq:582  vol:322 temp:57  nonce:4125150  err:56   crc:0    x:0   / 0 repeat:2    pct:100.1%/ 97.4%
+C9   freq:565  vol:326 temp:60  nonce:4020294  err:74   crc:0    x:0   / 0 repeat:1    pct:101.3%/100.6%
+C10  freq:576  vol:329 temp:62  nonce:4121458  err:69   crc:0    x:0   / 0 repeat:2    pct:100.9%/105.5%
+C11  freq:607  vol:327 temp:62  nonce:4317719  err:68   crc:0    x:0   / 0 repeat:0    pct:100.0%/101.7%
+C12  freq:585  vol:326 temp:62  nonce:4130237  err:51   crc:0    x:0   / 0 repeat:1    pct: 97.9%/ 99.2%
+C13  freq:589  vol:324 temp:64  nonce:4183395  err:63   crc:0    x:0   / 0 repeat:2    pct:101.0%/101.9%
+C14  freq:582  vol:324 temp:63  nonce:4130013  err:56   crc:0    x:0   / 0 repeat:4    pct:100.6%/ 95.6%
+C15  freq:568  vol:326 temp:65  nonce:4050605  err:63   crc:0    x:0   / 0 repeat:3    pct: 98.9%/104.2%
+C16  freq:583  vol:328 temp:66  nonce:4168269  err:62   crc:0    x:0   / 0 repeat:2    pct:100.4%/101.3%
+C17  freq:590  vol:327 temp:65  nonce:4201324  err:65   crc:0    x:0   / 0 repeat:3    pct: 99.9%/102.0%
+C18  freq:579  vol:324 temp:67  nonce:4143515  err:58   crc:0    x:0   / 0 repeat:5    pct: 99.4%/105.3%
+C19  freq:587  vol:323 temp:68  nonce:4189578  err:50   crc:0    x:0   / 0 repeat:4    pct: 99.7%/ 98.8%
+C20  freq:578  vol:322 temp:70  nonce:4118297  err:65   crc:0    x:0   / 0 repeat:5    pct: 99.8%/102.7%
+C21  freq:579  vol:322 temp:69  nonce:4136170  err:65   crc:0    x:0   / 0 repeat:1    pct: 98.3%/ 98.4%
+C22  freq:582  vol:326 temp:71  nonce:4166138  err:70   crc:0    x:0   / 0 repeat:1    pct: 96.7%/ 98.4%
+C23  freq:588  vol:325 temp:70  nonce:4198612  err:70   crc:0    x:0   / 0 repeat:4    pct: 99.8%/ 95.2%
+C24  freq:575  vol:323 temp:71  nonce:4102261  err:65   crc:0    x:0   / 0 repeat:4    pct:100.5%/ 99.0%
+C25  freq:588  vol:322 temp:73  nonce:4200619  err:77   crc:0    x:0   / 0 repeat:3    pct:100.7%/103.2%
+C26  freq:576  vol:323 temp:71  nonce:4114650  err:64   crc:0    x:0   / 0 repeat:4    pct:100.2%/ 99.1%
+C27  freq:585  vol:316 temp:74  nonce:4141600  err:56   crc:0    x:0   / 0 repeat:4    pct:101.8%/100.9%
+C28  freq:561  vol:321 temp:74  nonce:3986217  err:67   crc:0    x:0   / 0 repeat:4    pct:100.3%/ 98.0%
+C29  freq:587  vol:319 temp:74  nonce:4182844  err:71   crc:0    x:0   / 0 repeat:5    pct:101.0%/ 95.2%
+C30  freq:581  vol:315 temp:76  nonce:4152579  err:60   crc:0    x:0   / 0 repeat:5    pct: 99.8%/103.2%
+C31  freq:582  vol:315 temp:77  nonce:4135513  err:62   crc:0    x:0   / 0 repeat:2    pct:101.1%/104.7%
+C32  freq:576  vol:317 temp:76  nonce:4102073  err:72   crc:0    x:0   / 0 repeat:3    pct:101.0%/107.7%
+C33  freq:582  vol:316 temp:78  nonce:4127127  err:71   crc:0    x:0   / 0 repeat:3    pct:102.1%/107.6%
+C34  freq:577  vol:320 temp:78  nonce:4104995  err:65   crc:0    x:0   / 0 repeat:4    pct:100.3%/101.4%
+C35  freq:581  vol:319 temp:78  nonce:4141877  err:64   crc:0    x:0   / 0 repeat:4    pct:102.1%/ 99.0%
+C36  freq:571  vol:315 temp:80  nonce:4076349  err:83   crc:0    x:0   / 0 repeat:5    pct:100.8%/ 97.6%
+C37  freq:580  vol:316 temp:81  nonce:4137715  err:77   crc:0    x:0   / 0 repeat:4    pct:100.4%/101.3%
+C38  freq:580  vol:315 temp:81  nonce:4132129  err:51   crc:0    x:0   / 0 repeat:3    pct:101.0%/102.4%
+C39  freq:581  vol:310 temp:82  nonce:4134569  err:63   crc:0    x:0   / 0 repeat:1    pct:100.3%/ 98.2%
+C40  freq:581  vol:314 temp:83  nonce:4134443  err:61   crc:0    x:0   / 0 repeat:4    pct: 99.6%/104.2%
+C41  freq:573  vol:312 temp:82  nonce:4079260  err:58   crc:0    x:0   / 0 repeat:3    pct: 99.5%/100.3%
+C42  freq:566  vol:309 temp:84  nonce:4031354  err:67   crc:0    x:0   / 0 repeat:3    pct: 99.8%/100.0%
+C43  freq:581  vol:309 temp:84  nonce:4132250  err:58   crc:0    x:0   / 0 repeat:5    pct: 99.3%/100.9%
+C44  freq:580  vol:308 temp:84  nonce:4125159  err:60   crc:0    x:0   / 0 repeat:2    pct:100.3%/102.7%
+C45  freq:580  vol:306 temp:86  nonce:4135372  err:66   crc:0    x:0   / 0 repeat:5    pct:100.7%/103.0%
+C46  freq:577  vol:309 temp:86  nonce:4109250  err:47   crc:0    x:0   / 0 repeat:2    pct: 99.8%/ 99.9%
+C47  freq:565  vol:308 temp:86  nonce:4022235  err:69   crc:0    x:0   / 0 repeat:4    pct: 99.5%/ 96.4%
+C48  freq:577  vol:308 temp:87  nonce:4106348  err:65   crc:0    x:0   / 0 repeat:3    pct: 99.1%/ 99.1%
+C49  freq:557  vol:311 temp:87  nonce:3972039  err:56   crc:0    x:0   / 0 repeat:1    pct: 98.0%/ 95.6%
+C50  freq:566  vol:309 temp:88  nonce:4029955  err:61   crc:0    x:0   / 0 repeat:2    pct:101.4%/103.9%
+C51  freq:560  vol:308 temp:88  nonce:3982560  err:63   crc:0    x:0   / 0 repeat:3    pct:102.3%/ 99.5%
+C52  freq:582  vol:310 temp:90  nonce:4138412  err:61   crc:0    x:0   / 0 repeat:6    pct: 99.7%/101.4%
+C53  freq:562  vol:310 temp:88  nonce:4000599  err:61   crc:0    x:0   / 0 repeat:2    pct:101.5%/102.9%
+C54  freq:566  vol:309 temp:89  nonce:3993641  err:55   crc:0    x:0   / 0 repeat:2    pct: 98.6%/100.6%
+C55  freq:558  vol:309 temp:92  nonce:3942196  err:66   crc:0    x:0   / 0 repeat:4    pct: 99.8%/ 99.5%
+C56  freq:576  vol:308 temp:91  nonce:4041413  err:46   crc:0    x:0   / 0 repeat:6    pct:101.5%/108.1%
+C57  freq:568  vol:309 temp:91  nonce:4027669  err:69   crc:0    x:0   / 0 repeat:3    pct:100.2%/107.1%
+C58  freq:565  vol:312 temp:92  nonce:3993489  err:69   crc:0    x:0   / 0 repeat:4    pct:100.9%/ 98.7%
+C59  freq:557  vol:311 temp:94  nonce:3931488  err:59   crc:0    x:0   / 0 repeat:7    pct:101.5%/102.3%
+C60  freq:560  vol:300 temp:94  nonce:3947372  err:64   crc:0    x:0   / 0 repeat:2    pct:102.6%/107.3%
+C61  freq:554  vol:300 temp:95  nonce:3916533  err:63   crc:0    x:0   / 0 repeat:2    pct:100.3%/100.8%
+C62  freq:563  vol:300 temp:94  nonce:3960922  err:64   crc:0    x:0   / 0 repeat:6    pct: 98.8%/ 96.6%
+C63  freq:552  vol:303 temp:93  nonce:3863571  err:33   crc:0    x:0   / 0 repeat:2    pct:100.5%/106.4%
+C64  freq:573  vol:305 temp:94  nonce:4013125  err:62   crc:0    x:0   / 0 repeat:4    pct: 99.9%/100.3%
+C65  freq:563  vol:305 temp:95  nonce:3966393  err:55   crc:0    x:0   / 0 repeat:2    pct:100.9%/104.7%
+C66  freq:575  vol:307 temp:94  nonce:4062829  err:69   crc:0    x:0   / 0 repeat:1    pct: 99.9%/102.0%
+C67  freq:564  vol:302 temp:97  nonce:3990014  err:68   crc:0    x:0   / 0 repeat:0    pct:100.3%/108.4%
+C68  freq:543  vol:301 temp:94  nonce:3814493  err:61   crc:0    x:0   / 0 repeat:4    pct: 99.9%/ 96.8%
+C69  freq:533  vol:301 temp:88  nonce:3705349  err:61   crc:0    x:0   / 0 repeat:1    pct: 98.2%/100.2%
+C70  freq:564  vol:305 temp:94  nonce:3972904  err:59   crc:0    x:0   / 0 repeat:5    pct:100.4%/100.9%
+C71  freq:605  vol:309 temp:92  nonce:4230683  err:66   crc:0    x:0   / 0 repeat:6    pct: 98.9%/ 95.3%
+C72  freq:588  vol:306 temp:96  nonce:4072154  err:63   crc:0    x:0   / 0 repeat:4    pct: 99.0%/ 97.7%
+C73  freq:545  vol:307 temp:91  nonce:3825101  err:55   crc:0    x:0   / 0 repeat:2    pct:101.5%/102.7%
+C74  freq:562  vol:307 temp:93  nonce:3955014  err:73   crc:0    x:0   / 0 repeat:5    pct: 99.6%/101.7%
+C75  freq:579  vol:304 temp:93  nonce:3986764  err:56   crc:0    x:0   / 0 repeat:2    pct:100.8%/ 97.8%
+C76  freq:544  vol:307 temp:94  nonce:3830793  err:64   crc:0    x:0   / 0 repeat:0    pct: 99.6%/ 98.2%
+C77  freq:564  vol:308 temp:91  nonce:3937591  err:55   crc:0    x:0   / 0 repeat:2    pct: 99.2%/101.4%
+C78  freq:548  vol:308 temp:88  nonce:3805043  err:63   crc:0    x:0   / 0 repeat:5    pct:100.8%/102.1%
+C79  freq:574  vol:308 temp:93  nonce:3996353  err:63   crc:0    x:0   / 0 repeat:2    pct: 98.1%/100.9%
+C80  freq:580  vol:308 temp:91  nonce:4044221  err:57   crc:0    x:0   / 0 repeat:6    pct:101.3%/ 97.1%
+C81  freq:566  vol:311 temp:89  nonce:3942740  err:62   crc:0    x:0   / 0 repeat:4    pct: 99.7%/101.1%
+C82  freq:586  vol:313 temp:89  nonce:4106013  err:74   crc:0    x:0   / 0 repeat:4    pct: 99.3%/ 98.2%
+C83  freq:565  vol:315 temp:88  nonce:3964218  err:42   crc:0    x:0   / 0 repeat:1    pct: 97.8%/ 99.6%
+C84  freq:573  vol:311 temp:85  nonce:4000239  err:65   crc:0    x:0   / 0 repeat:3    pct: 98.9%/ 99.8%
+C85  freq:572  vol:312 temp:86  nonce:4025899  err:49   crc:0    x:0   / 0 repeat:3    pct: 98.7%/ 94.8%
+C86  freq:572  vol:311 temp:88  nonce:3993852  err:53   crc:0    x:0   / 0 repeat:4    pct:101.3%/101.3%
+C87  freq:563  vol:311 temp:86  nonce:3977292  err:51   crc:0    x:0   / 0 repeat:4    pct:100.4%/ 99.5%
+C88  freq:566  vol:314 temp:85  nonce:3999798  err:61   crc:0    x:0   / 0 repeat:4    pct:100.8%/104.6%
+C89  freq:587  vol:314 temp:85  nonce:4143844  err:46   crc:0    x:0   / 0 repeat:1    pct:100.2%/ 97.7%
+C90  freq:589  vol:315 temp:83  nonce:4166539  err:59   crc:0    x:0   / 0 repeat:1    pct: 97.9%/ 97.5%
+C91  freq:578  vol:316 temp:83  nonce:4091472  err:61   crc:0    x:0   / 0 repeat:4    pct: 99.7%/101.2%
+C92  freq:561  vol:316 temp:82  nonce:3972632  err:70   crc:0    x:0   / 0 repeat:3    pct:101.5%/ 98.9%
+C93  freq:569  vol:313 temp:79  nonce:4049152  err:66   crc:0    x:0   / 0 repeat:5    pct:101.2%/ 98.9%
+C94  freq:574  vol:314 temp:81  nonce:4094685  err:60   crc:0    x:0   / 0 repeat:6    pct:100.6%/ 95.7%
+C95  freq:579  vol:315 temp:81  nonce:4104926  err:66   crc:0    x:0   / 0 repeat:4    pct:101.4%/103.0%
+C96  freq:584  vol:316 temp:80  nonce:4139395  err:74   crc:0    x:0   / 0 repeat:5    pct:100.9%/ 99.3%
+C97  freq:578  vol:318 temp:79  nonce:4099608  err:72   crc:0    x:0   / 0 repeat:5    pct: 99.2%/ 96.7%
+C98  freq:575  vol:317 temp:78  nonce:4066671  err:68   crc:0    x:0   / 0 repeat:5    pct: 99.2%/ 97.5%
+C99  freq:572  vol:315 temp:75  nonce:4034759  err:56   crc:0    x:0   / 0 repeat:2    pct:100.6%/105.4%
+C100 freq:581  vol:316 temp:77  nonce:4108612  err:63   crc:0    x:0   / 0 repeat:2    pct: 99.6%/100.8%
+C101 freq:590  vol:319 temp:77  nonce:4167265  err:66   crc:0    x:0   / 0 repeat:4    pct:101.9%/100.4%
+C102 freq:588  vol:320 temp:75  nonce:4187489  err:61   crc:0    x:0   / 0 repeat:1    pct:101.7%/103.5%
+C103 freq:577  vol:320 temp:74  nonce:4100198  err:76   crc:0    x:0   / 0 repeat:2    pct: 99.3%/ 94.9%
+C104 freq:574  vol:320 temp:73  nonce:4089749  err:56   crc:0    x:0   / 0 repeat:3    pct: 99.7%/ 97.2%
+C105 freq:570  vol:319 temp:71  nonce:4042796  err:62   crc:0    x:0   / 0 repeat:6    pct:102.0%/103.0%
+C106 freq:586  vol:321 temp:72  nonce:4160355  err:72   crc:0    x:0   / 0 repeat:1    pct:100.2%/ 98.3%
+C107 freq:581  vol:322 temp:73  nonce:4119687  err:71   crc:0    x:0   / 0 repeat:2    pct: 99.8%/102.2%
+C108 freq:587  vol:320 temp:70  nonce:4115799  err:74   crc:0    x:0   / 0 repeat:3    pct:100.1%/101.0%
+C109 freq:591  vol:320 temp:70  nonce:4165996  err:72   crc:0    x:0   / 0 repeat:2    pct:100.4%/102.9%
+C110 freq:575  vol:320 temp:67  nonce:4042015  err:62   crc:0    x:0   / 0 repeat:4    pct:100.1%/100.9%
+C111 freq:566  vol:320 temp:65  nonce:4032270  err:55   crc:0    x:0   / 0 repeat:3    pct:100.0%/101.0%
+C112 freq:597  vol:321 temp:68  nonce:4248437  err:59   crc:0    x:0   / 0 repeat:2    pct:100.3%/103.4%
+C113 freq:582  vol:323 temp:69  nonce:4141121  err:62   crc:0    x:0   / 0 repeat:1    pct: 99.3%/ 99.4%
+C114 freq:599  vol:320 temp:65  nonce:4208097  err:54   crc:0    x:0   / 0 repeat:1    pct: 99.6%/104.3%
+C115 freq:590  vol:320 temp:65  nonce:4153886  err:64   crc:0    x:0   / 0 repeat:2    pct: 99.8%/ 94.8%
+C116 freq:568  vol:320 temp:63  nonce:4020187  err:71   crc:0    x:0   / 0 repeat:3    pct: 98.6%/ 98.6%
+C117 freq:571  vol:328 temp:60  nonce:4057445  err:47   crc:0    x:0   / 0 repeat:3    pct:100.7%/102.6%
+C118 freq:584  vol:330 temp:61  nonce:4148522  err:65   crc:0    x:1   / 0 repeat:5    pct:103.1%/100.7%
+C119 freq:599  vol:330 temp:64  nonce:4202480  err:61   crc:0    x:1   / 0 repeat:2    pct:100.3%/101.7%
+C120 freq:599  vol:325 temp:62  nonce:4220051  err:81   crc:0    x:0   / 0 repeat:1    pct: 99.5%/102.3%
+C121 freq:588  vol:325 temp:60  nonce:4145013  err:68   crc:0    x:0   / 0 repeat:0    pct:100.7%/100.1%
+C122 freq:565  vol:325 temp:57  nonce:3990723  err:61   crc:0    x:0   / 0 repeat:6    pct:101.8%/102.1%
+C123 freq:574  vol:330 temp:55  nonce:4050989  err:73   crc:0    x:0   / 0 repeat:2    pct:101.2%/ 97.2%
+C124 freq:587  vol:332 temp:57  nonce:4117653  err:57   crc:0    x:0   / 0 repeat:7    pct:101.3%/102.6%
+C125 freq:599  vol:334 temp:59  nonce:4176286  err:66   crc:0    x:0   / 0 repeat:4    pct:101.8%/ 99.7%
+C126 freq:606  vol:331 temp:56  nonce:4224642  err:52   crc:0    x:0   / 0 repeat:5    pct:100.3%/103.0%
+C127 freq:577  vol:333 temp:54  nonce:4080501  err:73   crc:0    x:1   / 0 repeat:6    pct: 99.8%/ 99.4%
+C128 freq:573  vol:333 temp:53  nonce:4021257  err:58   crc:0    x:1   / 0 repeat:2    pct: 98.9%/101.0%
+C129 freq:584  vol:330 temp:50  nonce:4108002  err:68   crc:0    x:0   / 0 repeat:3    pct: 99.1%/ 97.2%
+C130 freq:568  vol:333 temp:51  nonce:4020872  err:56   crc:0    x:0   / 0 repeat:1    pct:100.0%/101.6%
+C131 freq:590  vol:334 temp:54  nonce:4174618  err:77   crc:0    x:0   / 0 repeat:4    pct:100.0%/ 99.8%
+C132 freq:587  vol:329 temp:53  nonce:4139379  err:49   crc:0    x:0   / 0 repeat:4    pct: 99.2%/ 98.6%
+C133 freq:585  vol:330 temp:49  nonce:4117387  err:60   crc:0    x:0   / 0 repeat:1    pct: 98.4%/ 96.9%
+C134 freq:581  vol:330 temp:52  nonce:4122092  err:59   crc:0    x:0   / 0 repeat:6    pct:100.9%/ 98.4%
+</textarea>
+</div>
+
+   <footer>
+    <a>Copyright (C) 2020 Microbt.com. All Rights Reserved.</a>
+   </footer>
+   </div>
+  </div>
+ </body>
+</html>
