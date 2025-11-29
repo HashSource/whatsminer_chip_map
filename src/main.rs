@@ -17,9 +17,10 @@ use i18n::{Language, LocalizedColorMode, Tr};
 use models::{ColorMode, MinerData, SystemInfo};
 
 fn main() -> iced::Result {
-    iced::application("WhatsMiner Chip Map", App::update, App::view)
-        .theme(|_| Theme::Dark)
-        .run_with(App::new)
+    iced::application(App::new, App::update, App::view)
+        .title(App::title)
+        .theme(App::theme)
+        .run()
 }
 
 #[derive(Debug, Clone)]
@@ -52,6 +53,14 @@ struct App {
 }
 
 impl App {
+    fn title(&self) -> String {
+        "WhatsMiner Chip Map".into()
+    }
+
+    fn theme(&self) -> Theme {
+        Theme::Dark
+    }
+
     fn new() -> (Self, Task<Message>) {
         let language = Language::default();
         (
@@ -154,7 +163,7 @@ impl App {
                 Message::ColorModeChanged
             )
             .padding(8)
-            .width(120),
+            .width(150),
             text(Tr::lang(lang)).size(14),
             pick_list(Language::ALL, Some(lang), Message::LanguageChanged)
                 .padding(8)

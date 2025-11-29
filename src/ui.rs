@@ -14,7 +14,7 @@ use crate::models::{Chip, ColorMode, MinerData, Slot, SystemInfo};
 use crate::theme;
 
 const CHIP_SIZE: f32 = 55.0; // Square aspect ratio
-const CHIP_SPACING: u16 = 3;
+const CHIP_SPACING: f32 = 3.0;
 
 pub fn miner_view<'a>(
     data: &'a MinerData,
@@ -113,7 +113,7 @@ fn sidebar<'a>(
             .push(text(&info.model).size(12))
             .push(text(&info.hardware_info).size(11))
             .push(text(format!("{}: {}", Tr::firmware(lang), info.firmware_version)).size(11))
-            .push(Space::with_height(8)); // spacer
+            .push(Space::new().height(8)); // spacer
     }
 
     for (slot_idx, slot) in data.slots.iter().enumerate() {
@@ -250,7 +250,7 @@ fn chip_grid<'a>(
     let top_domains = remaining - (remaining / 2);
 
     let mut grid = Column::new()
-        .spacing(CHIP_SPACING * 4)
+        .spacing(CHIP_SPACING * 4.0)
         .width(Length::Shrink);
 
     // Top section first (displayed at top): domains bottom_domains to num_domains-1
@@ -311,7 +311,7 @@ fn render_section<'a>(
                 let chip_analysis = analysis.get(chip_idx).copied();
                 r = r.push(chip_cell(&chips[chip_idx], color_mode, chip_analysis));
             } else {
-                r = r.push(Space::new(CHIP_SIZE, CHIP_SIZE));
+                r = r.push(Space::new().width(CHIP_SIZE).height(CHIP_SIZE));
             }
         }
         section = section.push(r);
