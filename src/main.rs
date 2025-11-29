@@ -1,4 +1,5 @@
 mod api;
+mod config;
 mod models;
 mod theme;
 mod ui;
