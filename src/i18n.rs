@@ -11,6 +11,9 @@ pub enum Language {
     Spanish,
     Persian,
     Chinese,
+    Ukrainian,
+    Polish,
+    Kazakh,
 }
 
 impl Language {
@@ -20,17 +23,25 @@ impl Language {
         Self::Spanish,
         Self::Persian,
         Self::Chinese,
+        Self::Ukrainian,
+        Self::Polish,
+        Self::Kazakh,
     ];
 }
 
 impl fmt::Display for Language {
+    /// Returns ISO 639-1 two-letter language codes
+    /// See: https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.write_str(match self {
-            Self::English => "en",
-            Self::Russian => "ru",
-            Self::Spanish => "es",
-            Self::Persian => "fa",
-            Self::Chinese => "zh",
+            Self::English => "en",   // English
+            Self::Russian => "ru",   // Russian (Русский)
+            Self::Spanish => "es",   // Spanish (Español)
+            Self::Persian => "fa",   // Persian/Farsi (فارسی)
+            Self::Chinese => "zh",   // Chinese (中文)
+            Self::Ukrainian => "uk", // Ukrainian (Українська)
+            Self::Polish => "pl",    // Polish (Polski)
+            Self::Kazakh => "kk",    // Kazakh (Қазақша)
         })
     }
 }
@@ -48,6 +59,9 @@ impl Tr {
             Language::Spanish => "Mapa de chips WhatsMiner",
             Language::Persian => "نقشه چیپ WhatsMiner",
             Language::Chinese => "WhatsMiner 芯片图",
+            Language::Ukrainian => "Карта чіпів WhatsMiner",
+            Language::Polish => "Mapa chipów WhatsMiner",
+            Language::Kazakh => "WhatsMiner чип картасы",
         }
     }
 
@@ -59,6 +73,9 @@ impl Tr {
             Language::Spanish => "Listo",
             Language::Persian => "آماده",
             Language::Chinese => "就绪",
+            Language::Ukrainian => "Готово",
+            Language::Polish => "Gotowe",
+            Language::Kazakh => "Дайын",
         }
     }
 
@@ -67,8 +84,11 @@ impl Tr {
             Language::English => "Connecting...",
             Language::Russian => "Подключение...",
             Language::Spanish => "Conectando...",
-            Language::Persian => "...در حال اتصال",
+            Language::Persian => "در حال اتصال...",
             Language::Chinese => "连接中...",
+            Language::Ukrainian => "Підключення...",
+            Language::Polish => "Łączenie...",
+            Language::Kazakh => "Қосылуда...",
         }
     }
 
@@ -78,6 +98,9 @@ impl Tr {
             Language::Russian => "Ошибка",
             Language::Persian => "خطا",
             Language::Chinese => "错误",
+            Language::Ukrainian => "Помилка",
+            Language::Polish => "Błąd",
+            Language::Kazakh => "Қате",
         }
     }
 
@@ -93,6 +116,9 @@ impl Tr {
             Language::Spanish => "Usuario",
             Language::Persian => "کاربر",
             Language::Chinese => "用户",
+            Language::Ukrainian => "Користувач",
+            Language::Polish => "Użytkownik",
+            Language::Kazakh => "Пайдаланушы",
         }
     }
 
@@ -103,6 +129,9 @@ impl Tr {
             Language::Spanish => "Clave",
             Language::Persian => "رمز",
             Language::Chinese => "密码",
+            Language::Ukrainian => "Пароль",
+            Language::Polish => "Hasło",
+            Language::Kazakh => "Құпиясөз",
         }
     }
 
@@ -114,6 +143,9 @@ impl Tr {
             Language::Spanish => "Obtener",
             Language::Persian => "دریافت",
             Language::Chinese => "获取",
+            Language::Ukrainian => "Завантажити",
+            Language::Polish => "Pobierz",
+            Language::Kazakh => "Жүктеу",
         }
     }
 
@@ -122,8 +154,11 @@ impl Tr {
             Language::English => "Loading...",
             Language::Russian => "Загрузка...",
             Language::Spanish => "Cargando...",
-            Language::Persian => "...بارگذاری",
+            Language::Persian => "بارگذاری...",
             Language::Chinese => "加载中...",
+            Language::Ukrainian => "Завантаження...",
+            Language::Polish => "Ładowanie...",
+            Language::Kazakh => "Жүктелуде...",
         }
     }
 
@@ -132,8 +167,11 @@ impl Tr {
         match lang {
             Language::English | Language::Spanish => "Color:",
             Language::Russian => "Цвет:",
-            Language::Persian => ":رنگ",
+            Language::Persian => "رنگ:",
             Language::Chinese => "颜色:",
+            Language::Ukrainian => "Колір:",
+            Language::Polish => "Kolor:",
+            Language::Kazakh => "Түс:",
         }
     }
 
@@ -142,8 +180,11 @@ impl Tr {
             Language::English => "Lang:",
             Language::Russian => "Язык:",
             Language::Spanish => "Idioma:",
-            Language::Persian => ":زبان",
+            Language::Persian => "زبان:",
             Language::Chinese => "语言:",
+            Language::Ukrainian => "Мова:",
+            Language::Polish => "Język:",
+            Language::Kazakh => "Тіл:",
         }
     }
 
@@ -154,6 +195,9 @@ impl Tr {
             Language::Spanish => "Haga clic en 'Obtener' para cargar datos",
             Language::Persian => "برای بارگذاری داده‌ها روی 'دریافت' کلیک کنید",
             Language::Chinese => "点击'获取'加载矿机数据",
+            Language::Ukrainian => "Натисніть 'Завантажити' для отримання даних",
+            Language::Polish => "Kliknij 'Pobierz' aby załadować dane",
+            Language::Kazakh => "Деректерді жүктеу үшін 'Жүктеу' басыңыз",
         }
     }
 
@@ -161,19 +205,21 @@ impl Tr {
     pub fn system_info(lang: Language) -> &'static str {
         match lang {
             Language::English => "── System Info ──",
-            Language::Russian => "── Информация ──",
+            Language::Russian => "── Сист. инфо ──",
             Language::Spanish => "── Info Sistema ──",
             Language::Persian => "── اطلاعات سیستم ──",
             Language::Chinese => "── 系统信息 ──",
+            Language::Ukrainian => "── Сист. інфо ──",
+            Language::Polish => "── Info Systemu ──",
+            Language::Kazakh => "── Жүйе ақпараты ──",
         }
     }
 
     pub fn firmware(lang: Language) -> &'static str {
+        // FW = Firmware (not Software/ПО)
         match lang {
-            Language::English | Language::Spanish => "FW",
-            Language::Russian => "ПО",
-            Language::Persian => "FW",
             Language::Chinese => "固件",
+            _ => "FW", // International abbreviation
         }
     }
 
@@ -184,6 +230,9 @@ impl Tr {
             Language::Spanish => "Ranura",
             Language::Persian => "اسلات",
             Language::Chinese => "槽位",
+            Language::Ukrainian => "Слот",
+            Language::Polish => "Slot",
+            Language::Kazakh => "Слот",
         }
     }
 
@@ -193,6 +242,9 @@ impl Tr {
             Language::Russian => "чипов",
             Language::Persian => "چیپ",
             Language::Chinese => "芯片",
+            Language::Ukrainian => "чіпів",
+            Language::Polish => "chipów",
+            Language::Kazakh => "чип",
         }
     }
 
@@ -203,6 +255,9 @@ impl Tr {
             Language::Spanish => "ranuras",
             Language::Persian => "اسلات",
             Language::Chinese => "槽位",
+            Language::Ukrainian => "слотів",
+            Language::Polish => "slotów",
+            Language::Kazakh => "слот",
         }
     }
 
@@ -214,6 +269,9 @@ impl Tr {
             Language::Spanish => "Temperatura",
             Language::Persian => "دما",
             Language::Chinese => "温度",
+            Language::Ukrainian => "Температура",
+            Language::Polish => "Temperatura",
+            Language::Kazakh => "Температура",
         }
     }
 
@@ -224,6 +282,9 @@ impl Tr {
             Language::Spanish => "Errores",
             Language::Persian => "خطاها",
             Language::Chinese => "错误",
+            Language::Ukrainian => "Помилки",
+            Language::Polish => "Błędy",
+            Language::Kazakh => "Қателер",
         }
     }
 
@@ -238,6 +299,9 @@ impl Tr {
             Language::Spanish => "Gradiente",
             Language::Persian => "گرادیان",
             Language::Chinese => "梯度",
+            Language::Ukrainian => "Градієнт",
+            Language::Polish => "Gradient",
+            Language::Kazakh => "Градиент",
         }
     }
 
@@ -248,15 +312,20 @@ impl Tr {
             Language::Spanish => "Atípicos",
             Language::Persian => "پرت‌ها",
             Language::Chinese => "异常值",
+            Language::Ukrainian => "Викиди",
+            Language::Polish => "Odstające",
+            Language::Kazakh => "Ауытқулар",
         }
     }
 
     pub fn color_mode_nonce(lang: Language) -> &'static str {
         match lang {
-            Language::English | Language::Spanish => "Nonce",
+            Language::English | Language::Spanish | Language::Polish => "Nonce",
             Language::Russian => "Нонс",
             Language::Persian => "نانس",
             Language::Chinese => "随机数",
+            Language::Ukrainian => "Нонс",
+            Language::Kazakh => "Нонс",
         }
     }
 }

@@ -12,10 +12,6 @@
 
 ![demo](./demo_nonce.png)
 
-## Languages
-
-English (en), Russian (ru), Spanish (es), Persian (fa), Chinese (zh)
-
 ## Analysis Modes
 
 ### Gradient (local hotspots)
@@ -45,3 +41,7 @@ English (en), Russian (ru), Spanish (es), Persian (fa), Chinese (zh)
 - Dead or failing chips show up red (0 nonces = 100% deficit)
 - Overperforming chips are ignored (green = no problem)
 - Range: 0-50% below slot average → green to red
+
+## Languages
+
+English (en), Russian (ru), Spanish (es), Persian (fa), Chinese (zh), Ukrainian (uk), Polish (pl), Kazakh (kk)
