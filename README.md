@@ -12,6 +12,10 @@
 
 ![demo](./demo_nonce.png)
 
+## Languages
+
+English (en), Russian (ru), Spanish (es), Persian (fa), Chinese (zh)
+
 ## Analysis Modes
 
 ### Gradient (local hotspots)
