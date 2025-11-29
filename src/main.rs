@@ -69,7 +69,7 @@ impl App {
                 user: "admin".into(),
                 pass: "admin".into(),
                 status: Tr::ready(language).into(),
-                sidebar_width: 500.0,
+                sidebar_width: 400.0,
                 language,
                 ..Default::default()
             },

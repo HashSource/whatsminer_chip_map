@@ -16,6 +16,23 @@ use crate::theme;
 const CHIP_SIZE: f32 = 55.0; // Square aspect ratio
 const CHIP_SPACING: f32 = 3.0;
 
+/// Parse slot_link config string (e.g. "0:1 2:3") into pairs of linked slot indices
+fn parse_slot_links(slot_link: &str) -> Vec<(usize, usize)> {
+    slot_link
+        .split_whitespace()
+        .filter_map(|pair| {
+            let parts: Vec<&str> = pair.split(':').collect();
+            if parts.len() == 2 {
+                let a = parts[0].parse().ok()?;
+                let b = parts[1].parse().ok()?;
+                Some((a, b))
+            } else {
+                None
+            }
+        })
+        .collect()
+}
+
 pub fn miner_view<'a>(
     data: &'a MinerData,
     system_info: Option<&'a SystemInfo>,
@@ -40,20 +57,51 @@ pub fn miner_view<'a>(
     // Compute cross-slot analysis for gradient/outlier/nonce modes
     let all_analysis = analysis::analyze_all_slots(&data.slots, chips_per_domain);
 
-    let sidebar = sidebar(data, system_info, &all_analysis, lang);
+    // Check for linked slots (hydro/immersion models)
+    let slot_links = miner_config
+        .and_then(|cfg| cfg.slot_link)
+        .map(parse_slot_links)
+        .unwrap_or_default();
 
-    let grids = data.slots.iter().zip(all_analysis.iter()).fold(
-        Column::new().spacing(25).width(Length::Shrink),
-        |col, (slot, slot_analysis)| {
-            col.push(slot_grid(
-                slot,
-                color_mode,
-                chips_per_domain,
-                slot_analysis,
-                lang,
-            ))
-        },
-    );
+    let sidebar = sidebar(data, system_info, &all_analysis, &slot_links, lang);
+
+    // Build grids - use linked display for hydro/immersion models, normal for others
+    let grids = if !slot_links.is_empty() {
+        // Hydro model: display linked slots side by side
+        let mut col = Column::new().spacing(25).width(Length::Shrink);
+        for (left_idx, right_idx) in &slot_links {
+            if let (Some(left_slot), Some(right_slot)) =
+                (data.slots.get(*left_idx), data.slots.get(*right_idx))
+            {
+                let left_analysis = all_analysis.get(*left_idx).map(|a| a.as_slice());
+                let right_analysis = all_analysis.get(*right_idx).map(|a| a.as_slice());
+                col = col.push(linked_slot_grid(
+                    left_slot,
+                    right_slot,
+                    color_mode,
+                    chips_per_domain,
+                    left_analysis,
+                    right_analysis,
+                    lang,
+                ));
+            }
+        }
+        col
+    } else {
+        // Normal model: display slots individually
+        data.slots.iter().zip(all_analysis.iter()).fold(
+            Column::new().spacing(25).width(Length::Shrink),
+            |col, (slot, slot_analysis)| {
+                col.push(slot_grid(
+                    slot,
+                    color_mode,
+                    chips_per_domain,
+                    slot_analysis,
+                    lang,
+                ))
+            },
+        )
+    };
 
     let divider = mouse_area(
         container(text("⋮").size(14).center())
@@ -98,6 +146,7 @@ fn sidebar<'a>(
     data: &'a MinerData,
     system_info: Option<&'a SystemInfo>,
     all_analysis: &[Vec<ChipAnalysis>],
+    _slot_links: &[(usize, usize)],
     lang: Language,
 ) -> Column<'a, Message> {
     let mut col = Column::new().spacing(2).padding(5).width(Length::Fill);
@@ -116,6 +165,7 @@ fn sidebar<'a>(
             .push(Space::new().height(8)); // spacer
     }
 
+    // Display all slots consistently
     for (slot_idx, slot) in data.slots.iter().enumerate() {
         col = col.push(
             text(format!("── {} {} ──", Tr::slot(lang), slot.id))
@@ -129,32 +179,39 @@ fn sidebar<'a>(
             let nonce_deficit = slot_analysis
                 .and_then(|a| a.get(chip_idx))
                 .map_or(0.0, |a| a.nonce_deficit);
-
-            col = col.push(
-                row![
-                    text(format!("C{:<3}", chip.id)).size(12),
-                    text(format!("freq:{:<3}", chip.freq)).size(12),
-                    text(format!("vol:{:<3}", chip.vol)).size(12),
-                    text("temp:").size(12),
-                    text(format!("{:<2}", chip.temp))
-                        .size(12)
-                        .color(theme::color_for_chip_temp(chip.temp)),
-                    text("nonce:").size(12),
-                    text(format!("{:<6}", chip.nonce))
-                        .size(12)
-                        .color(theme::color_for_nonce_deficit(nonce_deficit)),
-                    text(format!(
-                        "errors:{} crc:{} x:{} repeat:{} pct:{:.0}%/{:.0}%",
-                        chip.errors, chip.crc, chip.x, chip.repeat, chip.pct1, chip.pct2,
-                    ))
-                    .size(12),
-                ]
-                .spacing(2),
-            );
+            col = col.push(sidebar_chip_row(chip, nonce_deficit));
         }
     }
 
     col
+}
+
+fn sidebar_chip_row(chip: &Chip, nonce_deficit: f32) -> Column<'_, Message> {
+    column![
+        row![
+            text(format!("C{}", chip.id)).size(12),
+            text(format!("freq:{}", chip.freq)).size(12),
+            text(format!("vol:{}", chip.vol)).size(12),
+            text("temp:").size(12),
+            text(format!("{}", chip.temp))
+                .size(12)
+                .color(theme::color_for_chip_temp(chip.temp)),
+            text("nonce:").size(12),
+            text(format!("{}", chip.nonce))
+                .size(12)
+                .color(theme::color_for_nonce_deficit(nonce_deficit)),
+        ]
+        .spacing(4),
+        row![
+            Space::new().width(12),
+            text(format!(
+                "err:{} crc:{} x:{} repeat:{} pct:{:.1}%/{:.1}%",
+                chip.errors, chip.crc, chip.x, chip.repeat, chip.pct1, chip.pct2,
+            ))
+            .size(12),
+        ]
+    ]
+    .spacing(0)
 }
 
 /// Infer chips_per_domain from chip count using common domain sizes
@@ -228,6 +285,156 @@ fn slot_grid<'a>(
     .into()
 }
 
+/// Render two linked slots stacked vertically (for hydro/immersion models)
+/// Physical layout: slot 0 on top, slot 1 below (stacked hashboards)
+fn linked_slot_grid<'a>(
+    top_slot: &'a Slot,
+    bottom_slot: &'a Slot,
+    color_mode: ColorMode,
+    chips_per_domain: usize,
+    top_analysis: Option<&[ChipAnalysis]>,
+    bottom_analysis: Option<&[ChipAnalysis]>,
+    lang: Language,
+) -> Element<'a, Message> {
+    // Calculate domains for layout info
+    let top_domains = if chips_per_domain > 0 {
+        top_slot.chips.len().div_ceil(chips_per_domain)
+    } else {
+        1
+    };
+    let bottom_domains = if chips_per_domain > 0 {
+        bottom_slot.chips.len().div_ceil(chips_per_domain)
+    } else {
+        1
+    };
+
+    // Header showing both linked slots
+    let header = row![
+        text(format!(
+            "{} {}+{}",
+            Tr::slot(lang),
+            top_slot.id,
+            bottom_slot.id
+        ))
+        .size(18),
+        text(format!("{}MHz / {}MHz", top_slot.freq, bottom_slot.freq)).size(14),
+        text(format!(
+            "{:.1}°C / {:.1}°C",
+            top_slot.temp, bottom_slot.temp
+        ))
+        .size(14)
+        .color(theme::color_for_board_temp(
+            (top_slot.temp + bottom_slot.temp) / 2.0
+        )),
+        text(format!(
+            "{}+{} {}",
+            top_slot.chips.len(),
+            bottom_slot.chips.len(),
+            Tr::chips(lang)
+        ))
+        .size(14),
+        text(format!(
+            "[{}d+{}d × {}c/d]",
+            top_domains, bottom_domains, chips_per_domain
+        ))
+        .size(12),
+    ]
+    .spacing(20);
+
+    // Build stacked chip grids (top slot above, bottom slot below)
+    let top_grid = linked_chip_grid(
+        &top_slot.chips,
+        color_mode,
+        chips_per_domain,
+        top_analysis.unwrap_or(&[]),
+    );
+
+    let bottom_grid = linked_chip_grid(
+        &bottom_slot.chips,
+        color_mode,
+        chips_per_domain,
+        bottom_analysis.unwrap_or(&[]),
+    );
+
+    // Stack vertically: top slot label, top grid, divider, bottom slot label, bottom grid
+    let stacked_grids = column![
+        text(format!("{} {}", Tr::slot(lang), top_slot.id))
+            .size(14)
+            .color(theme::BRAND_ORANGE),
+        top_grid,
+        // Horizontal divider between the two stacked boards
+        container(Space::new().height(3)).style(|_| theme::linked_divider_style()),
+        text(format!("{} {}", Tr::slot(lang), bottom_slot.id))
+            .size(14)
+            .color(theme::BRAND_ORANGE),
+        bottom_grid,
+    ]
+    .spacing(8);
+
+    container(column![header, stacked_grids].spacing(10))
+        .padding(15)
+        .width(Length::Shrink)
+        .style(|_| theme::slot_container())
+        .into()
+}
+
+/// Render chip grid for linked slot display
+/// For hydro/immersion models: NO snake pattern, simple left/right split
+/// - Right side: first half of domains (D0 at far right)
+/// - Left side: second half of domains (also D0-ward on right)
+/// Both sections display domains right-to-left (lowest domain index on right)
+fn linked_chip_grid<'a>(
+    chips: &'a [Chip],
+    color_mode: ColorMode,
+    chips_per_domain: usize,
+    analysis: &[ChipAnalysis],
+) -> Column<'a, Message> {
+    let num_domains = if chips_per_domain > 0 {
+        chips.len().div_ceil(chips_per_domain)
+    } else {
+        1
+    };
+
+    // Split domains in half: right side gets first half, left side gets second half
+    let right_domains = (num_domains + 1) / 2; // D0 through D(mid-1) on right
+    let left_domains = num_domains - right_domains; // D(mid) through D(last) on left
+
+    let mut grid = Column::new()
+        .spacing(CHIP_SPACING * 4.0)
+        .width(Length::Shrink);
+
+    // Top visual section: RIGHT side of board (D0 at far right, C0 at bottom-right)
+    // Domains displayed right-to-left so D0 is on the far right
+    let right_section = render_linked_section(
+        chips,
+        color_mode,
+        chips_per_domain,
+        0,
+        right_domains,
+        true, // reversed: D0 on far right
+        analysis,
+    );
+    grid = grid.push(right_section);
+
+    // Bottom visual section: LEFT side of board (higher domain numbers)
+    // Last chip should be at top-right, so use normal row order (not reversed)
+    // Domains displayed left-to-right so highest domain (last chip) is on the right
+    if left_domains > 0 {
+        let left_section = render_section(
+            chips,
+            color_mode,
+            chips_per_domain,
+            right_domains, // start from middle
+            num_domains,   // to end
+            false,         // not reversed: highest domain index on right
+            analysis,
+        );
+        grid = grid.push(left_section);
+    }
+
+    grid
+}
+
 fn chip_grid<'a>(
     chips: &'a [Chip],
     color_mode: ColorMode,
@@ -284,7 +491,7 @@ fn chip_grid<'a>(
     grid
 }
 
-/// Render a section of domains as rows of chips
+/// Render a section of domains as rows of chips (top-to-bottom row order)
 fn render_section<'a>(
     chips: &'a [Chip],
     color_mode: ColorMode,
@@ -298,6 +505,43 @@ fn render_section<'a>(
     let mut section = Column::new().spacing(CHIP_SPACING).width(Length::Shrink);
 
     for row_idx in 0..chips_per_domain {
+        let mut r = Row::new().spacing(CHIP_SPACING).width(Length::Shrink);
+
+        for i in 0..domain_count {
+            let domain_idx = if reversed {
+                end_domain - 1 - i
+            } else {
+                start_domain + i
+            };
+            let chip_idx = domain_idx * chips_per_domain + row_idx;
+            if chip_idx < chips.len() {
+                let chip_analysis = analysis.get(chip_idx).copied();
+                r = r.push(chip_cell(&chips[chip_idx], color_mode, chip_analysis));
+            } else {
+                r = r.push(Space::new().width(CHIP_SIZE).height(CHIP_SIZE));
+            }
+        }
+        section = section.push(r);
+    }
+
+    section
+}
+
+/// Render a section for linked slots (bottom-to-top row order: C0 at bottom)
+fn render_linked_section<'a>(
+    chips: &'a [Chip],
+    color_mode: ColorMode,
+    chips_per_domain: usize,
+    start_domain: usize,
+    end_domain: usize,
+    reversed: bool,
+    analysis: &[ChipAnalysis],
+) -> Column<'a, Message> {
+    let domain_count = end_domain - start_domain;
+    let mut section = Column::new().spacing(CHIP_SPACING).width(Length::Shrink);
+
+    // Render rows in reverse order: highest row_idx first (top), row_idx=0 last (bottom)
+    for row_idx in (0..chips_per_domain).rev() {
         let mut r = Row::new().spacing(CHIP_SPACING).width(Length::Shrink);
 
         for i in 0..domain_count {

@@ -180,6 +180,19 @@ pub fn divider_style() -> container::Style {
     }
 }
 
+/// Style for divider between linked slots (hydro/immersion models)
+pub fn linked_divider_style() -> container::Style {
+    container::Style {
+        background: Some(Background::Color(BRAND_ORANGE)),
+        border: Border {
+            color: BRAND_ORANGE,
+            width: 1.0,
+            radius: 2.0.into(),
+        },
+        ..Default::default()
+    }
+}
+
 pub fn tooltip_style() -> container::Style {
     container::Style {
         text_color: Some(Color::WHITE),
