@@ -4,11 +4,7 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-iced = { git = "https://github.com/iced-rs/iced", branch = "master", features = [
-    "tokio",
-    "advanced-shaping",
-    "image",
-] }
+iced = { version = "0.14", features = ["tokio", "advanced-shaping", "image"] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
 reqwest = { version = "0.12", features = [
     "cookies",
